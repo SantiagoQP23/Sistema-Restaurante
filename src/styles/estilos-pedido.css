@@ -1,0 +1,21 @@
+.caja-pedido{
+    border-radius: 5px;
+    color: #000;
+
+    border: #48e 1px solid;
+    box-shadow: 6px 15px 15px -8px rgba(32,122,189,0.44);
+-webkit-box-shadow: 6px 15px 15px -8px rgba(32,122,189,0.44);
+-moz-box-shadow: 6px 15px 15px -8px rgba(32,122,189,0.44);
+
+}
+
+.caja-detalle{
+border: #48e 1px solid;
+box-shadow: 6px 15px 15px -8px rgba(32,122,189,0.44);
+-webkit-box-shadow: 6px 15px 15px -8px rgba(32,122,189,0.44);
+-moz-box-shadow: 6px 15px 15px -8px rgba(32,122,189,0.44);
+
+}
+
+
+

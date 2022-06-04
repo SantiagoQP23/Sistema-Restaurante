@@ -1,0 +1,94 @@
+import React, { FC } from 'react';
+
+import { AppBar, Box, CssBaseline, styled, Toolbar } from '@mui/material';
+
+import { Sidebar } from './Sidebar';
+import { Navbar } from './Navbar';
+import { UiContext } from '../../context/UiContext';
+
+interface Props {
+  children: React.ReactNode;
+}
+
+const drawerWidth = 300;
+
+
+const MainWrapper = styled(Box)(
+  ({ theme }) => `
+        flex: 1 1 auto;
+        display: flex;
+        height: 100%;
+        
+        @media (min-width: ${theme.breakpoints.values.lg}px) {
+            padding-left: ${theme.sidebar.width};
+        }
+`
+);
+
+const MainContent = styled(Box)(
+  ({ theme }) => `
+        margin-top: ${theme.header.height};
+        flex: 1 1 auto;
+        overflow: auto;
+`
+);
+
+export const Layout: FC<Props> = ({ children }) => {
+
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+
+      <UiContext.Provider value={{ mobileOpen, handleDrawerToggle }}>
+
+        <AppBar
+          position="fixed"
+          sx={{
+            width: { md: `calc(100% - ${drawerWidth}px)` },
+            ml: { md: `${drawerWidth}px` },
+
+          }}
+
+        >
+          <Navbar />
+        </AppBar>
+
+        <Sidebar />
+      </UiContext.Provider>
+
+      <MainWrapper>
+        <MainContent>
+          {children}
+        </MainContent>
+      </MainWrapper>
+    </Box>
+    
+
+  );
+{/*  <Box
+   component="main"
+   sx={{
+     flexGrow: 1,
+     p: 3,
+     width: { lg: `calc(100% - ${drawerWidth}px)` },
+     minHeight: '100vh',
+     background: 'linear-gradient(311deg, rgba(227,239,247,1) 5%, rgba(229,238,249,1) 57%, rgba(220,231,244,1) 100%)',
+     marginTop: '100px'
+   }}
+
+
+ >
+   <Toolbar />
+   {children}
+
+ </Box> 
+*/}
+}
+
+
