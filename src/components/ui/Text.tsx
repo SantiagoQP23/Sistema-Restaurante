@@ -51,7 +51,7 @@ const TextWrapper = styled('span')(
 `
 );
 
-const Text: FC<TextProps> = ({
+export const Text: FC<TextProps> = ({
   className = '',
   color = 'secondary',
   children,
@@ -64,18 +64,5 @@ const Text: FC<TextProps> = ({
   );
 };
 
-Text.propTypes = {
-  children: PropTypes.node,
-  className: PropTypes.string,
-  color: PropTypes.oneOf([
-    'primary',
-    'secondary',
-    'error',
-    'warning',
-    'success',
-    'info',
-    'black'
-  ])
-};
 
-export default Text;
+

@@ -8,7 +8,9 @@ import { AppThunk, RootState } from "../store/store";
 
 export interface AuthState {
   usuario: IUsuario | null,
-  checking: boolean
+  checking: boolean,
+  error: string | null;
+  usuarios: IUsuario[];
 }
 /*
 usuario:  idUsuario: 1,
@@ -23,7 +25,9 @@ usuario:  idUsuario: 1,
 
 const initialState: AuthState = {
   usuario: null,
-  checking: true
+  checking: true,
+  error: null,
+  usuarios: []
 };
 
 export const authSlice = createSlice({
@@ -40,7 +44,29 @@ export const authSlice = createSlice({
     },
     authCheckingFinish: (state) => {
       state.checking = false
-    }
+    },
+    authError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload
+    },
+
+    authUsuariosLoad: (state, action: PayloadAction<IUsuario[]>) => {
+      state.usuarios = action.payload;
+    },
+    authUsuarioAdd: (state, action: PayloadAction<IUsuario>) => {
+      state.usuarios.push(action.payload);
+    },
+    authUsuarioDelete: (state, action: PayloadAction<number>) => {
+      state.usuarios = state.usuarios.filter(u => u.idUsuario === action.payload);
+    },
+    authUsuarioUpdate: (state, action: PayloadAction<IUsuario>) => {
+      state.usuarios = state.usuarios.map(
+        u => (u.idUsuario === action.payload.idUsuario)
+        ? action.payload
+        : u
+        );
+    },
+
+
 
   }
 
@@ -50,7 +76,16 @@ export const authSlice = createSlice({
 
 
 
-export const { authLogin, authLogout, authCheckingFinish } = authSlice.actions;
+export const { authLogin, 
+  authLogout, 
+  authCheckingFinish, 
+  authError,
+  authUsuarioAdd,
+  authUsuarioUpdate,
+  authUsuarioDelete,
+  authUsuariosLoad
+
+} = authSlice.actions;
 
 export const selectAuth = (state: RootState) => state.auth;
 
@@ -72,6 +107,7 @@ export const startLogin = (nombreUsuario: string, password: string): AppThunk =>
     dispatch(authLogin(body.usuario))
 
   } else {
+    dispatch(authError(body.msg))
     console.log('Error', body.msg, 'error');
   }
 

@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 // Actions
@@ -17,8 +17,12 @@ export const LoginRouter: FC = () => {
   const { checking, usuario } = useAppSelector(selectAuth);
 
   const startCheckingJWT = () => {
-    console.log("Chequeando jwt")
+    
     dispatch(startChecking());
+
+  
+
+
   }
 
   useEffect(() => {
@@ -26,9 +30,8 @@ export const LoginRouter: FC = () => {
 
   }, [dispatch]);
 
-  /*  if (checking) {
-     return (<h5> Espere...</h5>)
-   } */
+
+  
 
   return (
     <>

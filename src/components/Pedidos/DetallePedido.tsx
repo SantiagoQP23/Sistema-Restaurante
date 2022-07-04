@@ -15,7 +15,8 @@ import { useCounter } from '../../hooks/useCounter';
 import { SocketContext } from '../../context/SocketContext';
 import { IDetallePedido, INuevoDetallePedido } from '../../interfaces';
 import { ICallbackSocket } from '../../interfaces/sockets';
-import { detalleDeleted, detalleSetActive, detalleUpdatedCantidad, pedidoUpdateTotal} from '../../reducers';
+import { detalleDeleted, detalleSetActive, detalleUpdatedCantidad, pedidoUpdateTotal } from '../../reducers';
+import { AddCircleOutline, RemoveCircleOutline, SaveOutlined } from '@mui/icons-material';
 
 interface Props {
   detalle: IDetallePedido;
@@ -49,20 +50,20 @@ export const DetallePedido: FC<Props> = ({ detalle, totalPedido }) => {
         console.log(detalle.idDetallePedido);
 
         const detalleEliminar = {
-          idDetallePedido: detalle.idDetallePedido, 
+          idDetallePedido: detalle.idDetallePedido,
           idPedido
         }
 
-        socket.emit('eliminarDetalle',  detalleEliminar , ({ok}: ICallbackSocket) => {
+        socket.emit('eliminarDetalle', detalleEliminar, ({ ok }: ICallbackSocket) => {
 
           // TODO leer el ok en el callbacke
-            if(ok){
-              // TODO Eliminar el detalle de pedido
-              dispatch( detalleDeleted( detalle.idDetallePedido));
-              
-              dispatch( pedidoUpdateTotal( Number(totalPedido) - Number(detalle.subtotal) ))
+          if (ok) {
+            // TODO Eliminar el detalle de pedido
+            dispatch(detalleDeleted(detalle.idDetallePedido));
 
-            }
+            dispatch(pedidoUpdateTotal(Number(totalPedido) - Number(detalle.subtotal)))
+
+          }
 
         }
         )
@@ -76,7 +77,7 @@ export const DetallePedido: FC<Props> = ({ detalle, totalPedido }) => {
   }
 
   const actualizarDetalle = () => {
-  
+
     const cantidad = Math.abs(counter - detalle.cantidad);
 
     const detalleActualizar = {
@@ -88,24 +89,24 @@ export const DetallePedido: FC<Props> = ({ detalle, totalPedido }) => {
     }
 
     socket.emit('actualizarCantidadDetalle', { detalleActualizar }, (data: ICallbackSocket) => {
-      
+
       // TODO leer el ok en el callback
-      if (data.ok){
+      if (data.ok) {
         // TODO Activar el detalle de pedido
-        dispatch( detalleSetActive(detalle));
+        dispatch(detalleSetActive(detalle));
 
         // TODO Actualizar la cantidad del detalle
-        dispatch( detalleUpdatedCantidad( counter ));
+        dispatch(detalleUpdatedCantidad(counter));
 
         const subtotal = cantidad * detalle.producto.precio;
         const aumentar = counter > detalle.cantidad;
 
         // TODO Actualizar el subtotal del pedido
-        const total = aumentar 
-        ? Number(totalPedido) + Number(subtotal)
-        : Number(totalPedido) - Number(subtotal);
+        const total = aumentar
+          ? Number(totalPedido) + Number(subtotal)
+          : Number(totalPedido) - Number(subtotal);
 
-        dispatch( pedidoUpdateTotal(total));
+        dispatch(pedidoUpdateTotal(total));
       }
 
     })
@@ -123,30 +124,30 @@ export const DetallePedido: FC<Props> = ({ detalle, totalPedido }) => {
 
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                
-                  <Typography
-                    variant="h6"
-                    color="initial">
-                    {detalle.producto.nombre}
-                  </Typography>
 
-                  <IconButton
-                    aria-label="Eliminar detalle"
-                    onClick={eliminarDetalle}
-                    disabled={!detalle.estado}
-                    color='error'
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                <Typography
+                  variant="h6"
+                  color="initial">
+                  {detalle.producto.nombre}
+                </Typography>
 
-               
+                <IconButton
+                  aria-label="Eliminar detalle"
+                  onClick={eliminarDetalle}
+                  disabled={!detalle.estado}
+                  color='error'
+                >
+                  <DeleteIcon />
+                </IconButton>
+
+
               </Box>
 
 
-              <Typography variant="body2" color="initial">
+              {/*  <Typography variant="body2" color="initial">
                 {detalle.producto.descripcion}
               </Typography>
-
+ */}
               <Box sx={{ display: "flex" }}>
                 <Box sx={{ flexGrow: 1 }} mt={2}>
                   <Typography variant="body1" color="initial">
@@ -157,60 +158,34 @@ export const DetallePedido: FC<Props> = ({ detalle, totalPedido }) => {
                 </Box>
 
                 <Box alignContent="right" >
-                  <ButtonGroup size='small' variant="text" >
-                    <Button
-                      aria-label=""
+                  <Box display='flex' justifyContent='space-between' alignItems='center'>
+
+                    <IconButton
                       onClick={decrement}
-                      color='primary'
-                      variant='outlined'
-
                     >
-                      <RemoveIcon color='primary' />
+                      <RemoveCircleOutline />
+                    </IconButton>
 
-                    </Button>
-
-                    <Box sx={{ width: 60, display: "inline-block" }} >
-                      <TextField
-                        id="cantidad"
-                        value={counter}
-                        type="number"
-                        inputProps={{ min: 0, style: { textAlign: 'center', border: 'none' } }}
-
-                      />
-
-                    </Box>
-
-                    <Button
-                      aria-label=""
+                    <Typography sx={{ width: 40, textAlign: 'center' }}>{counter}</Typography>
+                    <IconButton
                       onClick={increment}
-                      color='primary'
-                      variant='outlined'
-
                     >
-                      <AddIcon color='primary' />
-                    </Button>
-
-
-
-                    <Button
-                      type="submit"
-                      className="btn-submit"
+                      <AddCircleOutline />
+                    </IconButton>
+                    <IconButton
                       disabled={!counter || counter === detalle.cantidad}
                       color='primary'
-                      variant='outlined'
                       onClick={() => actualizarDetalle()}
                     >
-                      <SaveIcon />
-                    </Button>
-
-                  </ButtonGroup>
-
+                      <SaveOutlined />
+                    </IconButton>
+                  </Box>
 
 
                 </Box>
               </Box>
 
-              <Typography variant="h6">$ {detalle.subtotal}</Typography>
+              <Typography variant="h6" textAlign='right'>$ {detalle.subtotal}</Typography>
             </CardContent>
           </Card>
 
@@ -220,3 +195,41 @@ export const DetallePedido: FC<Props> = ({ detalle, totalPedido }) => {
   )
 }
 
+
+{/*   <ButtonGroup size='large' variant="text" >
+                    <Button
+                      aria-label=""
+                      onClick={decrement}
+                      color='primary'
+                      variant='outlined'
+
+                    >
+                      <RemoveIcon color='primary' />
+
+                    </Button> */}
+
+{/*  <Box sx={{ width: 60, display: "inline-block" }} >
+                      <TextField
+                        id="cantidad"
+                        value={counter}
+                        type="number"
+                        inputProps={{ min: 0, style: { textAlign: 'center', border: 'none' } }}
+
+                      />
+
+                    </Box>
+ */}
+{/*     <Button
+                      aria-label=""
+                      onClick={increment}
+                      color='primary'
+                      variant='outlined'
+
+                    >
+                      <AddIcon color='primary' />
+                    </Button> */}
+
+
+
+
+{/* </ButtonGroup> */ }

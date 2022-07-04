@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import {
   DialogActions, DialogContent, DialogContentText,
   DialogTitle, Button, TextField, Select, MenuItem,
-  InputAdornment, Typography, CircularProgress, Grid,
+  InputAdornment, Typography, CircularProgress, Grid, InputLabel,
 
 } from '@mui/material/';
 
@@ -12,7 +12,7 @@ import { AttachMoney } from '@mui/icons-material';
 
 import { productoStartCreated, productoStartUpdate } from '../../actions/productos';
 
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { ICategoria, IProducto } from '../../interfaces';
 import { useAppDispatch } from '../../hooks/useRedux';
@@ -22,6 +22,8 @@ import { useAppDispatch } from '../../hooks/useRedux';
 
 
 const initialForm = (idCategoria: number) => {
+
+  console.log("Añadiendo en la categoria: ", idCategoria);
   return {
     nombre: "",
     precio: 0,
@@ -51,9 +53,10 @@ export const ModalEditarProducto: FC<Props> = ({ producto, closeModal, categoria
 
   const dispatch = useAppDispatch();
 
+
   const productoInitial = producto ? producto : initialForm(idCategoria);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, control } = useForm<FormData>({
     defaultValues: productoInitial
   });
 
@@ -98,15 +101,15 @@ export const ModalEditarProducto: FC<Props> = ({ producto, closeModal, categoria
             fullWidth
             variant="standard"
             {
-              ...register('nombre',{
-                required: 'Este campo es requerido',
-                minLength: {value: 2, message: 'Minimo 2 caracteres'},
+            ...register('nombre', {
+              required: 'Este campo es requerido',
+              minLength: { value: 2, message: 'Minimo 2 caracteres' },
 
 
-              })
+            })
             }
             helperText={<Typography color="red">{errors.nombre?.message} </ Typography>}
-            />
+          />
 
           <TextField
             label="Precio"
@@ -121,16 +124,16 @@ export const ModalEditarProducto: FC<Props> = ({ producto, closeModal, categoria
             fullWidth
             type='number'
             {
-              ...register('precio',{
-                required: 'Este campo es requerido',
-                min: {value: 0, message: 'El valor debe ser mayor a 0'},
+            ...register('precio', {
+              required: 'Este campo es requerido',
+              min: { value: 0, message: 'El valor debe ser mayor a 0' },
 
 
-              })
+            })
             }
             helperText={<Typography color="red">{errors.precio?.message} </ Typography>}
-            
-            />
+
+          />
 
           <TextField
             label="Descripcion del producto"
@@ -139,36 +142,49 @@ export const ModalEditarProducto: FC<Props> = ({ producto, closeModal, categoria
             rows={4}
             fullWidth
             {
-              ...register('descripcion',{
-                required: 'Este campo es requerido',
-                minLength: {value: 10, message: 'Minimo 10 caracteres'},
+            ...register('descripcion', {
+              required: 'Este campo es requerido',
+              minLength: { value: 10, message: 'Minimo 10 caracteres' },
 
 
-              })
+            })
             }
             helperText={<Typography color="red">{errors.descripcion?.message} </ Typography>}
-            
-            />
-          <Select
-            label="Seccion"
-            margin='dense'
-            fullWidth
-            disabled
 
-            {
-              ...register('idCategoria',{
+          />
 
-              })
+
+          <Controller
+            name='idCategoria'
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) =>
+            <>
+              <InputLabel id='select-categoria'>Categoria</InputLabel>
+              <Select
+                label="select-categoria"
+                margin='dense'
+                fullWidth
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={!!errors.idCategoria}
+              >
+                {
+                  categorias.map(categoria => (
+                    <MenuItem key={categoria.idCategoria!} value={categoria.idCategoria!}>{categoria.nombreCategoria}</MenuItem>
+
+                  ))
+                }
+              </Select>
+                </>
             }
-            error={!!errors.idCategoria}
-          >
-            {
-              categorias.map(categoria => (
-                <MenuItem key={categoria.idCategoria!} value={categoria.idCategoria!}>{categoria.nombreCategoria}</MenuItem>
 
-              ))
-            }
-          </Select>
+
+          />
+
+
+
+
 
         </DialogContent>
 

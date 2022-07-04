@@ -8,11 +8,13 @@ import { RootState } from "../store/store";
 
 
 export interface ProductosState {
-  productos: IProducto[]
+  productos: IProducto[];
+  productoActivo: IProducto | null;
 }
 
 const initialState: ProductosState = {
-  productos: []
+  productos: [],
+  productoActivo: null
 };
 
 export const productosSlice = createSlice({
@@ -36,6 +38,9 @@ export const productosSlice = createSlice({
     },
     productoLoaded: (state, action: PayloadAction<IProducto[]>) => {
       state.productos = action.payload
+    },
+    productoSetActive: (state, action: PayloadAction<IProducto>) => {
+      state.productoActivo = action.payload
     }
 
   }

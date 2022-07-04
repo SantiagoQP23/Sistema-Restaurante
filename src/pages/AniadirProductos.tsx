@@ -42,9 +42,9 @@ export const AniadirProductos: FC = () => {
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }} mb={2}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }} my={3}>
 
-        <Typography variant='h6'>Añadir productos</Typography>
+        <Typography variant='h2'>Añadir productos</Typography>
 
         <Button
           variant="contained"

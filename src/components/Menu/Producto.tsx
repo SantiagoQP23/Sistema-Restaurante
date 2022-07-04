@@ -12,21 +12,19 @@ export const Producto : FC<Props> = ({ producto }) => {
   return (
     < >
 
-      <Card sx={{
-        border: '1px solid #48e'
-      }}>
      {/*  <CardMedia
         component="img"
         height="200"
         image="https://sainfoinc.com/wp-content/uploads/2018/02/image-not-available.jpg"
         alt={producto.nombre}
       /> */}
+      <Card >
         <CardContent>
           
-          <Typography variant="h6" component="div">
+          <Typography variant='h6'>
             {producto.nombre}
           </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          <Typography >
           {producto.precio}
           </Typography>
           <Typography variant="body2">
@@ -36,22 +34,7 @@ export const Producto : FC<Props> = ({ producto }) => {
 
       </Card>
 
-      {/* <Grid container spacing={1}>
-          <Grid item xs={5} >
-          </Grid>
-          <Grid item xs={7}>
-            <Typography variant="h6" >{producto.nombre}</Typography>
-            <Typography variant="body2" >$ {producto.precio}</Typography>
-            <Typography variant="subtitle2" >{producto.descripcion}</Typography>
-
-          </Grid>
-
-        </Grid> */}
-
-
-
-
-
+    
       {/* 
 
       ESTO PUEDE SERVIR PARA UNA VENTANA MODAL PARA MOSTRAR MAS INFORMACIÓN DEL PRODUCTO

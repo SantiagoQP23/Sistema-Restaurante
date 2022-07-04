@@ -6,6 +6,9 @@ import { Sidebar } from './Sidebar';
 import { Navbar } from './Navbar';
 import { UiContext } from '../../context/UiContext';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.minimal.css';
+
 interface Props {
   children: React.ReactNode;
 }
@@ -32,6 +35,16 @@ const MainContent = styled(Box)(
         overflow: auto;
 `
 );
+
+const contextClass = {
+  success: "bg-blue-600",
+  error: "bg-red-600",
+  info: "bg-gray-600",
+  warning: "bg-orange-400",
+  default: "bg-indigo-600",
+  dark: "bg-white-600 font-gray-300",
+};
+
 
 export const Layout: FC<Props> = ({ children }) => {
 
@@ -65,13 +78,30 @@ export const Layout: FC<Props> = ({ children }) => {
       <MainWrapper>
         <MainContent>
           {children}
+          <ToastContainer
+
+           
+            position="bottom-left"
+            autoClose={5000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme='colored'
+            
+
+          />
+
         </MainContent>
       </MainWrapper>
     </Box>
-    
+
 
   );
-{/*  <Box
+  {/*  <Box
    component="main"
    sx={{
      flexGrow: 1,

@@ -4,6 +4,7 @@ import { AppThunk } from "../store/store";
 import { fetchConToken } from "../helpers/fetch";
 import { categoriaAddNew, categoriaDeleted, categoriaLoaded, categoriaUpdated } from "../reducers";
 import { ICategoria } from "../interfaces";
+import { toast } from "react-toastify";
 
 // Añadir una nueva categoria
 export const categoriaStartCreated = (categoria: ICategoria): AppThunk => async (
@@ -19,9 +20,10 @@ export const categoriaStartCreated = (categoria: ICategoria): AppThunk => async 
 
 
       dispatch(categoriaAddNew(body.categoria));
+      toast.success(body.msg)
 
     } else {
-      Swal.fire('Error', body.msg, 'error');
+      toast.error(body.errors[0].msg);
     }
 
   } catch (error) {
@@ -40,8 +42,9 @@ export const categoriaStartUpdate = (categoria: ICategoria): AppThunk => async (
 
       if(resp.ok) {
         dispatch( categoriaUpdated(categoria));
+        toast.success(body.msg)
       }else{
-        Swal.fire('Error', body.msg, 'error');
+        toast.error(body.errors[0].msg);
       }
 
     } catch (error) {
@@ -58,10 +61,11 @@ export const categoriaStartDelete = (idCategoria: number): AppThunk => async (
       const body = await resp.json();
   
       if(resp.ok){
-        console.log("la categoria se ha eliminado");
         dispatch( categoriaDeleted(idCategoria));
+        toast.success(body.msg)
+
       }else {
-        Swal.fire('Error', body.msg, 'error');
+        toast.error(body.errors[0].msg);
       }
       
     } catch (error) {
@@ -80,7 +84,6 @@ export const categoriaStartLoad = (): AppThunk => async (
 
       const resp = await fetchConToken('menu/categorias');
       const body = await resp.json();
-      console.log(body);
       const categorias = body.categorias as ICategoria[];
 
       dispatch( categoriaLoaded(categorias));

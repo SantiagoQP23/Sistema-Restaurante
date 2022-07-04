@@ -1,35 +1,37 @@
 import { useEffect, useState, useContext } from 'react';
-import { Typography, Grid, Select, MenuItem, InputLabel, Box, FormControl, Divider, Card, CardContent, Badge, Tooltip, styled, Avatar, LinearProgress, useTheme, CardHeader } from '@mui/material';
+import { Typography, Grid, Select, MenuItem, InputLabel, Box, FormControl, Divider, Card, CardContent, Badge, Tooltip, styled, Avatar, LinearProgress, useTheme, CardHeader, TextField } from '@mui/material';
 import { fetchConToken } from '../helpers/fetch';
 import { SocketContext } from '../context/SocketContext';
 import { IDetallePedido, IDetallePendiente } from '../interfaces/pedidos';
 import { IActualizarCantidadDetalle, IEliminarDetalle, INuevoDetallePendiente } from '../interfaces/sockets';
 
 
-import { formatDistance, subDays, subMinutes, subHours } from 'date-fns';
-import Text from '../components/ui/Text';
+
 import { PageTitle } from '../components/ui/PageTitle';
 import { PageTitleWrapper } from '../components/ui/PageTitleWraper';
-
-const LinearProgressWrapper = styled(LinearProgress)(
-  ({ theme }) => `
-        flex-grow: 1;
-        height: 10px;
-        
-        &.MuiLinearProgress-root {
-          background-color: ${theme.colors.alpha.black[10]};
-        }
-        
-        .MuiLinearProgress-bar {
-          border-radius: ${theme.general.borderRadiusXl};
-        }
-`
-);
+import { DetallePendiente } from '../components/pedidosPendientes/DetallePendiente';
+import { PedidoPendiente } from '../components/pedidosPendientes/';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import {  selectPedidos } from '../reducers/pedidosSlice';
+import { LocalizationProvider, MobileDatePicker } from '@mui/lab';
+import { useFecha } from '../hooks/useFecha';
+import { parsearFecha } from '../helpers/fecha';
+import { useLocation, useNavigate } from 'react-router-dom';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { FiltrosPedidos } from '../components/Pedidos';
+import queryString from 'query-string';
+import { pedidoStartLoaded } from '../actions';
 
 
 export const PedidosPendientes = () => {
 
-  const [detalles, setDetalles] = useState<IDetallePendiente[]>([]);
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+
+  const [detalles, setDetalles] = useState<IDetallePedido[]>([]);
+
+  const{pedidos} = useAppSelector(selectPedidos);
 
   const { socket } = useContext(SocketContext);
 
@@ -41,6 +43,31 @@ export const PedidosPendientes = () => {
       setDetalles(body.detalles);
     }
   }
+
+   // Obtener la fecha del url
+   let { fecha = '' } = queryString.parse(location.search);
+
+   const { setFecha, fecha: fechaPedidos } = useFecha();
+ 
+   const cargarPedidos = (fecha: string) => {
+     dispatch(pedidoStartLoaded(fecha));
+   }
+ 
+   // Establecer la fecha de los pedidos a mostrar
+   useEffect(() => {
+     fecha
+       ? setFecha(fecha[0]!)
+       : setFecha();
+ 
+   }, []);
+ 
+   // Cargar los pedidos cuando cambia la fecha
+   useEffect(() => {
+ 
+     cargarPedidos(fechaPedidos);
+ 
+     // eslint-disable-next-line 
+   }, [fechaPedidos]);
 
   // MOSTRAR UN NUEVO DETALLE
 
@@ -114,88 +141,18 @@ export const PedidosPendientes = () => {
 
       {/* Filtro por mesero */}
       <Grid container spacing={1} mb={2}>
-        <Grid item xs={12} md={4} xl={3}>
-
-          <FormControl fullWidth>
-            <InputLabel >Meseros</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={10}
-              label="Age"
-
-            >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Todos</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-
+        <FiltrosPedidos />
       </Grid>
-
 
       <Grid container spacing={1}>
-        {
-          detalles.length > 0 && detalles.map(det => (
+       {pedidos.length > 0 && pedidos.map( p => (
+         <PedidoPendiente pedido={p} key={p.idPedido} />
 
-            <Grid key={det.idDetallePedido} item xs={12} md={6} lg={4}>
+         ) 
+       )}
 
-              <Card sx={{ p: 2.5 }}>
-
-                <Box display="flex" justifyContent="space-between">
-
-                  <Box sx={{ ml: 1.5 }}>
-                    <Typography variant="h4" noWrap gutterBottom>
-                      {det.pedido.nombreCliente}
-                    </Typography>
-                  </Box>
-                  <Box>
-
-                    <Typography variant="subtitle2" noWrap>
-                      {det.pedido.usuario.nombres}
-                    </Typography>
-
-                  </Box>
-
-                </Box>
-
-                <Divider sx={{ my: 1 }} />
-
-                <Box display="flex" alignItems="center" pb={3} justifyContent="space-between">
-
-                  <Box sx={{ ml: 1.5 }}>
-                    <Typography variant="h4" noWrap gutterBottom>
-                      {det.cantidad}  {det.producto.nombre}
-                    </Typography>
-                    <Typography variant="subtitle2" noWrap>
-                      {det.descripcion}
-                    </Typography>
-                  </Box>
-
-                  <Box>
-                    {formatDistance(subDays(new Date(), 14), new Date(), {
-                      addSuffix: true
-                    })}
-
-                  </Box>
-                </Box>
-
-                <Typography variant="subtitle2" gutterBottom>
-                  <Text color="black">{det.cantEntregada}</Text> out of{' '}
-                  <Text color="black">{det.cantidad}</Text> tasks completed
-                </Typography>
-                <LinearProgressWrapper
-                  value={(det.cantEntregada * 100) / det.cantidad}
-                  color="primary"
-                  variant="determinate"
-                />
-              </Card>
-
-            </Grid>
-          ))
-        }
       </Grid>
+
     </>
 
   )

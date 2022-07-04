@@ -4,6 +4,8 @@ import { AppThunk } from "../store/store";
 import { fetchConToken } from "../helpers/fetch";
 import { ISeccion } from "../interfaces";
 import { seccionAddNew, seccionDeleted, seccionLoaded, seccionUpdated } from "../reducers";
+import { toast } from "react-toastify";
+
 
 // Crear una nueva seccion
 export const seccionStartCreated = (seccion: ISeccion): AppThunk => async (
@@ -16,12 +18,14 @@ export const seccionStartCreated = (seccion: ISeccion): AppThunk => async (
 
 
     if (resp.ok) {
-      
+
 
       dispatch(seccionAddNew(body.seccion));
+      toast.success(body.msg)
 
     } else {
-      Swal.fire('Error', body.msg, 'error');
+     
+      toast.error(body.errors[0].msg);
     }
 
   } catch (error) {
@@ -35,21 +39,22 @@ export const seccionStartUpdate = (seccion: ISeccion): AppThunk => async (
   dispatch,
   getState) => {
 
-    try {
-      const resp = await fetchConToken(`menu/secciones/actualizar/${seccion.idSeccion}`, seccion, 'PUT');
-      const body = await resp.json();
-      
-      
-      if(resp.ok) {
-        dispatch( seccionUpdated(seccion));
-        
-      }else{
-        Swal.fire('Error', body.msg, 'error');
-      }  
+  try {
+    const resp = await fetchConToken(`menu/secciones/actualizar/${seccion.idSeccion}`, seccion, 'PUT');
+    const body = await resp.json();
 
-    } catch (error) {
-      console.log(error)
-    }  
+
+    if (resp.ok) {
+      dispatch(seccionUpdated(seccion));
+      toast.success(body.msg)    
+
+    } else {
+      toast.error(body.errors[0].msg);
+    }
+
+  } catch (error) {
+    console.log(error)
+  }
 
 
 };
@@ -59,21 +64,23 @@ export const seccionStartDelete = (idSeccion: number): AppThunk => async (
   dispatch,
   getState) => {
 
-    try {
-      const resp = await fetchConToken(`menu/secciones/eliminar/${idSeccion}`, { } , 'DELETE');
-      const body = await resp.json();
-  
-      if(resp.ok){
-        dispatch(seccionDeleted(idSeccion));
-      }
-      else{ 
-        Swal.fire('Error', body.msg, 'error');
+  try {
+    const resp = await fetchConToken(`menu/secciones/eliminar/${idSeccion}`, {}, 'DELETE');
+    const body = await resp.json();
 
-      }
-      
-    } catch (error) {
-      console.log(error);
+    if (resp.ok) {
+      dispatch(seccionDeleted(idSeccion));
+      toast.success(body.msg)
+
+
     }
+    else {
+      toast.error(body.errors[0].msg);
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
 
 };
 
@@ -82,23 +89,23 @@ export const seccionStartLoad = (): AppThunk => async (
   dispatch,
   getState) => {
 
-    try {
+  try {
 
-      const resp = await fetchConToken('menu/secciones');
-      const body = await resp.json();
+    const resp = await fetchConToken('menu/secciones');
+    const body = await resp.json();
 
-      if(resp.ok){
-        const secciones = body.secciones;
-  
-        dispatch( seccionLoaded(secciones));
+    if (resp.ok) {
+      const secciones = body.secciones;
 
-      }else {
-        Swal.fire('Error', body.msg, 'error')
-      }
+      dispatch(seccionLoaded(secciones));
 
-
-    }catch (e) {
-      console.log(e);
+    } else {
+      Swal.fire('Error', body.msg, 'error')
     }
+
+
+  } catch (e) {
+    console.log(e);
+  }
 
 };

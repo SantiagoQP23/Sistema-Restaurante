@@ -33,16 +33,8 @@ export const EditarProductos: FC<Props> = () => {
   let rutaAtras = `/menu/editar/${nombreSeccion}`;
   const { categorias } = useSelector(selectCategorias);
 
-
   // El producto que se va a mostrar en el modal
   const [producto, setProducto] = useState<IProducto | null>(null);
-
-  const [idCategoria, setIdCategoria] = useState(null);
-
-
-  const [actualizar, setActualizar] = useState(false);
-
-  // Para cambiar la categoria del producto
 
   const { isOpen: isOpenEditar, handleClickOpen: openModalEditar, handleClose: closeModalEditar } = useModal(false);
   const { isOpen: isOpenEliminar, handleClickOpen: openModalEliminar, handleClose: closeModalEliminar } = useModal(false);
@@ -56,11 +48,13 @@ export const EditarProductos: FC<Props> = () => {
     seccion,
     categoria } = useProductos();
 
+    // Abrir el modal de editar
   const editarProducto = (producto: IProducto | null) => {
     setProducto(producto);
     openModalEditar();
   }
 
+  // Abrir el modal de eliminar
   const eliminarProducto = (producto: IProducto) => {
     setProducto(producto);
     openModalEliminar();
@@ -75,6 +69,7 @@ export const EditarProductos: FC<Props> = () => {
     const categoria = categorias.find(categoria => categoria.nombreCategoria === nombreCategoria);
     return categoria;
   }
+
 
   const cargarProductos = () => {
 
@@ -157,7 +152,7 @@ export const EditarProductos: FC<Props> = () => {
           producto={producto}
           closeModal={closeModalEditar}
           categorias={categoriasSeccion}
-          idCategoria={idCategoria!}
+          idCategoria={categoria}
 
 
         />

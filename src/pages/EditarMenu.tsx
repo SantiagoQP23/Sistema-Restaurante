@@ -1,12 +1,13 @@
+import { FC } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // Material UI
-import { FC } from 'react';
+import { Container } from '@mui/material';
 
-import Typography from '@mui/material/Typography';
 
 // Pages
-import {EditarSecciones, EditarCategorias, EditarProductos} from '../components/EditarMenu/';
+import { EditarSecciones, EditarCategorias, EditarProductos } from '../components/EditarMenu/';
+import { PageTitle, PageTitleWrapper } from '../components/ui';
 
 interface Props {
   children?: React.ReactNode;
@@ -18,13 +19,18 @@ export const EditarMenu: FC<Props> = ({ children }) => {
   return (
     <>
 
-      <Typography variant="h6" color="initial">EDITAR MENÚ</Typography>
-      {children}
-      <Routes>
-        <Route path="/" element={<EditarSecciones />} />
-        <Route path="/:nombreSeccion" element={<EditarCategorias />} />
-        <Route path="/:nombreSeccion/:nombreCategoria" element={<EditarProductos />} />
-      </Routes>
+      <PageTitleWrapper >
+        <PageTitle heading='Editar menú' />
+      </PageTitleWrapper>
+
+      <Container maxWidth="lg">
+
+        <Routes>
+          <Route path="/" element={<EditarSecciones />} />
+          <Route path="/:nombreSeccion" element={<EditarCategorias />} />
+          <Route path="/:nombreSeccion/:nombreCategoria" element={<EditarProductos />} />
+        </Routes>
+      </Container>
 
     </>
   );

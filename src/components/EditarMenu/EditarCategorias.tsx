@@ -17,13 +17,16 @@ import { Categoria, Modal, ModalEditarCategoria, ModalEliminarCategoria } from '
 
 import { useModal } from '../../hooks/useModal';
 import { ICategoria } from '../../interfaces';
-import { CategoriasState, SeccionesState, selectCategorias, selectSecciones } from '../../reducers';
+import {  selectCategorias, selectSecciones } from '../../reducers';
 
 
 export function EditarCategorias() {
 
   // Se busca por nombre en el URL
   let { nombreSeccion } = useParams();
+
+  const { seccionActiva } = useSelector(selectSecciones);
+
 
   //TODO Sino se envia el nombre de la seccion redireccionar a menu
 
@@ -68,12 +71,20 @@ export function EditarCategorias() {
 
 
 
-  useEffect(() => {
 
-    establecerCategorias();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
+  // Abrir el modal de editar
+  const editarCategoria = (categoria: ICategoria | null) => {
+
+    setCategoria(categoria);
+    openModalEditar();
+  }
+
+  // Abrir el modal de eliminar
+  const eliminarCategoria = (categoria: ICategoria) => {
+    setCategoria(categoria);
+    openModalEliminar();
+  }
 
 
   useEffect(() => {
@@ -85,17 +96,13 @@ export function EditarCategorias() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categorias])
 
+  useEffect(() => {
 
-  const editarCategoria = (categoria: ICategoria | null) => {
+    establecerCategorias();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    setCategoria(categoria);
-    openModalEditar();
-  }
 
-  const eliminarCategoria = (categoria: ICategoria) => {
-    setCategoria(categoria);
-    openModalEliminar();
-  }
 
   return (
     <>

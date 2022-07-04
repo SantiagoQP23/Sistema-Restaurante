@@ -6,11 +6,13 @@ import { RootState } from "../store/store";
 
 
 export interface CategoriasState {
-  categorias: ICategoria[]
+  categorias: ICategoria[];
+  categoriaActiva: ICategoria | null;
 }
 
 const initialState: CategoriasState = {
-  categorias: []
+  categorias: [],
+  categoriaActiva: null
 };
 
 export const categoriasSlice = createSlice({
@@ -34,6 +36,9 @@ export const categoriasSlice = createSlice({
     },
     categoriaLoaded: (state, action: PayloadAction<ICategoria[]>) => {
       state.categorias = action.payload
+    },
+    categoriaSetActive: (state, action: PayloadAction<ICategoria>) => {
+      state.categoriaActiva = action.payload
     }
 
   }

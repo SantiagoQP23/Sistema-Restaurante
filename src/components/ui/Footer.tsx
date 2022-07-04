@@ -25,7 +25,7 @@ export const Footer = () => {
             </Typography>
           </Box>
           <Typography sx={{ pt: { xs: 2, md: 0 } }} variant="subtitle1">
-            Realizado por <Link href="#" target="_blank" rel="noopener noreferrer">Santiago Quirumbay</Link>
+            Desarrollado por <Link href="#" target="_blank" rel="noopener noreferrer">Santiago Quirumbay</Link>
           </Typography>
         </Box>
       </Container>

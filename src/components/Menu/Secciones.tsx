@@ -3,6 +3,9 @@ import { FC } from 'react';
 import { Tabs, Tab, Box, Card, CardContent } from '@mui/material/';
 
 import { ISeccion } from '../../interfaces';
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 
 interface Props {
   secciones: ISeccion[];
@@ -45,6 +48,7 @@ export const Secciones: FC<Props> = ({ secciones, cambiarSeccion, seccion }) => 
         </Card>
       </Box>
 
+      <ToastContainer />
 
     </>
   )

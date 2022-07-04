@@ -5,3 +5,4 @@ export * from './PageTitle';
 export * from './PageTitleWraper';
 export * from './Text';
 export * from './Userbox';
+export * from './Label';

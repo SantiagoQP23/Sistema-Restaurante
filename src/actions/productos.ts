@@ -5,13 +5,15 @@ import { fetchConToken } from "../helpers/fetch";
 import { IProducto } from "../interfaces";
 
 import { productoAddNew, productoDeleted, productoLoaded, productoUpdated } from "../reducers";
+import { toast } from "react-toastify";
 
 // Añadir un nuevo producto
 export const productoStartCreated = (producto: IProducto): AppThunk => async (
   dispatch,
   getState) => {
   try {
-    const resp = await fetchConToken(`menu/productos/crear`, producto, 'POST');
+
+   /*  const resp = await fetchConToken(`menu/productos/crear`, producto, 'POST');
 
     const body = await resp.json();
 
@@ -23,10 +25,13 @@ export const productoStartCreated = (producto: IProducto): AppThunk => async (
       //dispatch( categoriaProductoAdded(producto.idCategoria));
 
       //closeModal();
+      toast.success(body.msg)
+
+
 
     } else {
-      Swal.fire('Error', body.msg, 'error');
-    }
+      toast.error(body.errors[0].msg);
+    } */
 
   } catch (error) {
     console.log(error)
@@ -47,9 +52,10 @@ export const productoStartUpdate = (producto: IProducto): AppThunk => async (
       if(resp.ok) {
 
         dispatch( productoUpdated(producto));
+        toast.success(body.msg)
 
       }else{
-        Swal.fire('Error', body.msg, 'error');
+        toast.error(body.errors[0].msg);
       }
 
     } catch (error) {
@@ -70,9 +76,10 @@ export const productoStartDelete = (producto: IProducto): AppThunk => async (
       if(resp.ok){
 
         dispatch( productoDeleted(producto.idProducto!));
+        toast.success(body.msg);
 
       }else {
-        Swal.fire('Error', body.msg, 'error');
+        toast.error(body.errors[0].msg);
       }
       
     } catch (error) {
@@ -89,7 +96,6 @@ export const productoStartLoad = (): AppThunk => async (
 
       const resp = await fetchConToken('menu/productos');
       const body = await resp.json();
-      console.log(body);
       const productos = body.productos;
 
       dispatch( productoLoaded(productos));

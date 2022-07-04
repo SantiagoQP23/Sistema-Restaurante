@@ -1,13 +1,26 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
-
 
 // Redux
-import { categoriaStartLoad, productoStartLoad, seccionStartLoad } from '../actions/';
+import { 
+  categoriaStartLoad, 
+  productoStartLoad, 
+  seccionStartLoad,
+  usuarioStartLoad } from '../actions/';
 
 // Pages
-import { AniadirProductos, EditarPedido, Inicio, EditarMenu, Menu, PedidosPendientes, PedidosLayout, Error404 } from '../pages/';
+import { 
+  AniadirProductos, 
+  EditarPedido, 
+  Inicio, 
+  EditarMenu, 
+  Menu, 
+  PedidosPendientes, 
+  PedidosLayout, 
+  Error404, 
+  Perfil, 
+  Usuarios
+ } from '../pages/';
 
 // Componentes
 import { Layout } from '../components/ui/';
@@ -27,7 +40,9 @@ export const AppRouter = () => {
     dispatch(seccionStartLoad());
     dispatch(categoriaStartLoad());
     dispatch(productoStartLoad());
+    dispatch(usuarioStartLoad());
   }, [dispatch]);
+
 
   return (
     <>
@@ -37,6 +52,9 @@ export const AppRouter = () => {
 
           <Routes>
             <Route path='/' element={<Inicio />} />
+            <Route path='/perfil' element={<Perfil />} />
+            <Route path='/inicio' element={<Inicio />} />
+
             <Route path="/menu/editar/*" element={<EditarMenu />}>
               <Route path="" element={<EditarSecciones />} />
               <Route path=":seccion" element={<EditarCategorias />} />
@@ -55,8 +73,10 @@ export const AppRouter = () => {
 
             <Route path="*" element={<Error404 />} />
 
+          <Route path="/usuarios" element={<Usuarios />} />
 
           </Routes>
+
 
 
         </Layout>

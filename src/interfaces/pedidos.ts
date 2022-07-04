@@ -12,6 +12,7 @@ export interface IPedido {
   estado: boolean,
   hora: Date,
   usuario: IUsuario;
+  detalles: IDetallePedido[];
 }
 
 interface IUsuarioDetalle{

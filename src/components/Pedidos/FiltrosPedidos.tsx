@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { Grid, TextField, InputLabel, MenuItem, FormControl, Select} from '@mui/material'
@@ -11,6 +11,7 @@ import MobileDatePicker from '@mui/lab/MobileDatePicker';
 import { useFecha } from '../../hooks/useFecha';
 import { IUsuario } from '../../interfaces';
 import { parsearFecha } from '../../helpers/fecha';
+import { selectAuth } from '../../reducers/authSlice';
 
 interface Props{
 
@@ -23,6 +24,9 @@ export const FiltrosPedidos: FC<Props> = () => {
   const dispatch = useDispatch();
   const {fecha, setFecha } = useFecha();
   const [estadoPedidos, setEstadoPedidos] = React.useState(10);
+
+  const {usuarios} = useSelector(selectAuth);
+
 
   const cambiarFecha = (fecha: Date) => {
 
@@ -72,22 +76,21 @@ export const FiltrosPedidos: FC<Props> = () => {
       <Grid item xs={12} lg={3}>
 
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Mesero</InputLabel>
+          <InputLabel id="select-meseros">Mesero</InputLabel>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
+            labelId="select-meseros"
             label="Meseros"
             value={1000}
             
           >
-           {/*  {
+            {
 
-              meseros.map((mesero) => (
-                <MenuItem key={mesero.idUsuario} value={mesero.idUsuario}>{mesero.nombres}</MenuItem>
+              usuarios.map((usuario) => (
+                <MenuItem key={usuario.idUsuario} value={usuario.idUsuario}>{usuario.nombres}</MenuItem>
                 
                 )
                 )
-              } */}
+              }
               <MenuItem key={1000} value={1000}>{"Todos"}</MenuItem>
 
           </Select>

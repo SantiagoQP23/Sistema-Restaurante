@@ -2,17 +2,20 @@
 
 export interface ICargo {
   idCargo: number,
-  nombre: string,
+  nombreCargo: string,
   descripcion: string
 }
 
 
 export interface IUsuario {
-  idUsuario: number,
+  idUsuario?: number,
   nombreUsuario: string,
   nombres: string,
+  password?: string;
   
   cargo: ICargo,
+  idCargo?: number;
+  estado?: boolean
 }
 
 export interface ILogin{

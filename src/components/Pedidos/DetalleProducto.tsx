@@ -2,7 +2,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 
-import { Card, CardContent, Typography, Button, TextField, Box, ButtonGroup } from '@mui/material';
+import { Card, CardContent, Typography, Button, TextField, Box, ButtonGroup, IconButton } from '@mui/material';
 
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AddIcon from '@mui/icons-material/Add';
@@ -14,6 +14,7 @@ import { useCounter } from '../../hooks/useCounter';
 import { IProducto } from '../../interfaces';
 import { INuevoDetallePedido } from '../../interfaces/pedidos';
 import { PedidosState, selectPedidos } from '../../reducers';
+import { RemoveCircleOutline, AddCircleOutline, SaveOutlined } from '@mui/icons-material';
 
 interface Props {
   producto: IProducto;
@@ -43,64 +44,50 @@ export const DetalleProducto: FC<Props> = ({ producto, abrirModal, setDetalle })
       <Producto key={producto.idProducto} producto={producto} />
 
 
-      <Box display='flex' bgcolor='#fff' p={1} justifyContent='space-between'>
+      <Card>
+
+        <Box display='flex' justifyContent='space-between' p={1}>
 
 
-        <Typography variant="h6" > $ {subtotal}</Typography>
+          <Typography variant="h6" > $ {subtotal}</Typography>
 
-        <ButtonGroup variant="contained" size='small'>
-          <Button
-            aria-label="añadir"
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              setDetalle({
-                idPedido: pedidoActivo!.idPedido,
-                cantidad: counter,
-                descripcion: '',
-                subtotal,
-                producto,
-              })
-              abrirModal();
-            }}
-            disabled={counter <= 0}
-          >
+          <Box display='flex' justifyContent='space-between' alignItems='center'>
 
-            <ShoppingCartIcon />
-          </Button>
-          <Button
-            aria-label="añadir"
-            variant="contained"
-            color="primary"
-            onClick={increment}
-          >
-            <AddIcon />
-          </Button>
+            <IconButton
+              onClick={decrement}
+              >
+              <RemoveCircleOutline />
+            </IconButton>
 
-          <Box sx={{ width: 80, display: "inline-block" }} >
-            <TextField
-              id="cantidad"
-              value={counter}
-              type="number"
-              inputProps={{ min: 0, style: { textAlign: 'center' } }}
-
-            />
-
+            <Typography sx={{ width: 40, textAlign: 'center' }}>{counter}</Typography>
+            <IconButton
+              onClick={increment}
+              >
+              <AddCircleOutline />
+            </IconButton>
+            <IconButton
+              disabled={counter <= 0}
+              color='primary'
+              onClick={() => {
+                setDetalle({
+                  idPedido: pedidoActivo!.idPedido,
+                  cantidad: counter,
+                  descripcion: '',
+                  subtotal,
+                  producto,
+                })
+                abrirModal();
+              }}
+            >
+              <ShoppingCartIcon />
+            </IconButton>
           </Box>
-          <Button
-            aria-label="quitar"
-            variant="contained"
-            color="primary"
-            onClick={decrement}
 
-          >
-            <RemoveIcon />
-          </Button>
-        </ButtonGroup>
-      </Box>
+        </Box>
 
 
 
+      </Card>
 
     </>
   )

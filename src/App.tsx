@@ -2,7 +2,9 @@
 import './App.css';
 import { LoginRouter } from './routers';
 import { ThemeProvider } from '@mui/material/styles';
-import {themeCreator} from './themes/base';
+import { themeCreator } from './themes/base';
+import "react-toastify/dist/ReactToastify.css";
+
 
 function App() {
 
@@ -10,8 +12,9 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-
-      <LoginRouter></LoginRouter>
+  
+        <LoginRouter></LoginRouter>
+  
     </ThemeProvider>
   );
 

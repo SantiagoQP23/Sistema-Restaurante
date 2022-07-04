@@ -10,3 +10,5 @@ export  * from './InicioLayout';
 export  * from './Menu';
 export  * from './PedidosLayout';
 export  * from './PedidosPendientes';
+export  * from './Perfil';
+export  * from './Usuarios';

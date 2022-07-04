@@ -19,6 +19,7 @@ import '../../styles/estilos-pedido.css';
 
 import { IPedido } from '../../interfaces';
 import { useAppDispatch } from '../../hooks/useRedux';
+import { formatDistance } from 'date-fns';
 
 interface Props {
   pedido: IPedido
@@ -89,7 +90,15 @@ export const Pedido: FC<Props> = ({ pedido }) => {
 
                 <Typography variant="subtitle2" >{pedido.usuario.nombres}</Typography>
 
-                <Typography variant="subtitle1"> {parsearFecha(pedido.fecha)}</Typography>
+                <Typography 
+                  variant="subtitle1"
+                > 
+                {formatDistance(new Date(`${pedido.fecha}T${pedido.hora}`), new Date(), {
+            addSuffix: true,
+            includeSeconds: true,
+
+          })}
+          </Typography>
 
               </Box>
 

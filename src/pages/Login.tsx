@@ -1,10 +1,11 @@
-import { Grid, Box, TextField, Typography, FormControl, FormLabel, FormHelperText, Button, Link, Paper, Avatar, FormControlLabel, Checkbox } from '@mui/material';
+import { Grid, Box, TextField, Typography, FormControl, FormLabel, FormHelperText, Button, Link, Paper, Avatar, FormControlLabel, Checkbox, Chip } from '@mui/material';
 
-import { startLogin } from '../reducers';
+import { authError, selectAuth, startLogin } from '../reducers';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch } from '../app/hooks';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useAppSelector } from '../hooks/useRedux';
 
 
 
@@ -40,10 +41,14 @@ export const Login = () => {
     defaultValues: initialForm
   });
 
+  const { error } = useAppSelector(selectAuth);
 
   const handleLogin = (form: FormData) => {
-    console.log("Iniciando sesión")
+
     dispatch(startLogin(form.nombreUsuario, form.password));
+
+    setTimeout(() => dispatch(authError(null)), 6000);
+
 
   }
 
@@ -81,6 +86,12 @@ export const Login = () => {
               <Typography component="h1" variant="h5">
                 Sign in
               </Typography>
+              <Chip
+                label={error}
+                color="error"
+                sx={{ display: !!error ? "flex" : "none" }}
+
+              />
               <Box component="form" noValidate onSubmit={handleSubmit(handleLogin)} sx={{ mt: 1 }}>
                 <TextField
                   margin="normal"

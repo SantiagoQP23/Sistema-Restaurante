@@ -6,11 +6,13 @@ import { RootState } from "../store/store";
 
 
 export interface SeccionesState {
-  secciones: ISeccion[]
+  secciones: ISeccion[],
+  seccionActiva: ISeccion | null,
 }
 
 const initialState: SeccionesState = {
-  secciones: []
+  secciones: [],
+  seccionActiva: null
 };
 
 export const seccionesSlice = createSlice({
@@ -34,6 +36,9 @@ export const seccionesSlice = createSlice({
     },
     seccionLoaded: (state, action: PayloadAction<ISeccion[]>) => {
       state.secciones = action.payload
+    },
+    seccionSetActive: (state, action: PayloadAction<ISeccion>) => {
+      state.seccionActiva = action.payload
     }
   }
 
@@ -41,7 +46,8 @@ export const seccionesSlice = createSlice({
 
 
 export const {seccionDeleted, seccionLoaded, 
-  seccionUpdated, seccionAddNew
+  seccionUpdated, seccionAddNew,
+  seccionSetActive
 } = seccionesSlice.actions;
 
 export const selectSecciones = (state: RootState) => state.secciones;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 //Material UI
@@ -14,7 +14,6 @@ import { useModal } from '../../hooks/useModal'
 import { Modal, Seccion, ModalEliminarSeccion, ModalEditarSeccion } from './';
 
 import { ISeccion } from '../../interfaces';
-import { SeccionesState } from '../../reducers';
 import { selectSecciones } from '../../reducers/seccionesSlice';
 
 

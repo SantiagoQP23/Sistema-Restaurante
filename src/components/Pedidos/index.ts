@@ -6,3 +6,4 @@ export * from './FiltrosPedidos';
 export * from './Pedido';
 export * from './Pedidos';
 export * from './TablaPedido';
+export * from './ContadorPedidos';

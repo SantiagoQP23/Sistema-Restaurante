@@ -6,7 +6,8 @@ import { Assessment, Home, ReceiptLong, RestaurantMenu, Timer } from '@mui/icons
 import { useAppSelector } from '../../hooks/useRedux';
 import { selectAuth } from '../../reducers';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
-import { FC } from 'react';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import { FC, useEffect } from 'react';
 
 // Iconos
 interface IRoute {
@@ -17,11 +18,11 @@ interface IRoute {
 }
 
 const routes: IRoute[] = [
-
   {
     text: "Inicio",
     path: "/inicio",
     icon: () => <Home />,
+    
 
   },
   {
@@ -36,24 +37,36 @@ const routes: IRoute[] = [
     icon: () => <ReceiptLong />,
 
   },
-  {
-    text: "Editar menú",
-    path: "/menu/editar",
-    icon: () => <RestaurantMenu />,
-
-  },
+  
   {
     text: "Pedidos pendientes",
     path: "/pedidos/pendientes",
     icon: () => <Timer />,
 
   },
+]
+
+
+const routesAdmin: IRoute[] = [
+  {
+    text: "Editar menú",
+    path: "/menu/editar",
+    icon: () => <RestaurantMenu />,
+    
+  },
   {
     text: "Reportes",
     path: "/reportes",
     icon: () => <Assessment />,
-
+  
   },
+  {
+    text: "Usuarios",
+    path: "/usuarios",
+    icon: () => <GroupOutlinedIcon />,
+  
+  },
+
 ]
 
 export default function Listas() {
@@ -63,9 +76,9 @@ export default function Listas() {
 
   const usuarioRoute = {
     text: usuario!.nombres,
-    path: "perfgfdafsdil",
+    path: "perfil",
     icon: () => <Avatar alt={usuario!.nombres} src="/" />,
-    secondary: usuario!.cargo.nombre
+    secondary: usuario!.cargo.nombreCargo
 
   }
 
@@ -92,6 +105,18 @@ export default function Listas() {
               
             ))
           }
+          <Divider />
+          {
+            usuario!.cargo.idCargo === 1 && routesAdmin.map((route, i) => (
+              <Item
+                key={i}
+                route={route}
+              />
+              
+            ))
+            
+          }
+
 
         </List>
       </Box>

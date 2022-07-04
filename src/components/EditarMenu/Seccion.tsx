@@ -6,20 +6,27 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { ISeccion } from '../../interfaces';
+import { useAppDispatch } from '../../app/hooks';
+import { seccionSetActive } from '../../reducers';
 
 interface Props{
   seccion: ISeccion,
   eliminarSeccion: (seccion: ISeccion) => void;
   editarSeccion: (seccion: ISeccion) => void;
-
-  
 }
 
 
 export const Seccion:FC<Props> = ({ seccion, eliminarSeccion, editarSeccion }) => {
 
-
   const navigate = useNavigate();
+  
+  const dispatch = useAppDispatch();
+
+  const editarCategorias = () => {
+    navigate(`${seccion.nombreSeccion}`);
+    dispatch(seccionSetActive(seccion));
+  }
+
 
   return (
     <>
@@ -36,7 +43,6 @@ export const Seccion:FC<Props> = ({ seccion, eliminarSeccion, editarSeccion }) =
                 <EditIcon />
               </Button>
 
-
             </Box>
             
             <Box mt={2} display='flex' justifyContent='space-between' >
@@ -46,15 +52,10 @@ export const Seccion:FC<Props> = ({ seccion, eliminarSeccion, editarSeccion }) =
                 <DeleteIcon />
               </Button>
 
-
-              <Button size='small' variant="outlined" onClick={() => navigate(`${seccion.nombreSeccion}`)}>
+              <Button size='small' variant="outlined" onClick={() => editarCategorias()}>
                 Editar  Categorias
 
               </Button>
-
-
-
-
 
             </Box>
           </CardContent>
