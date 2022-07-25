@@ -9,6 +9,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { ICategoria } from '../../interfaces';
+import { useAppDispatch } from '../../hooks/useRedux';
+import { categoriaSetActive } from '../../reducers';
+import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 
 interface Props {
   categoria: ICategoria;
@@ -24,35 +27,46 @@ export const Categoria: FC<Props> = ({ categoria, nombreSeccion, editarCategoria
 
   const navigate = useNavigate();
 
+  const dispatch = useAppDispatch();
+
+  const establecerCategoria = () => {
+    navigate(`/menu/editar/${nombreSeccion}/${categoria.nombreCategoria}`);
+    dispatch(categoriaSetActive(categoria));
+
+  }
+
   return (
     <>
-      <Grid item xs={12} md={4} >
+      <Grid item xs={12} sm={4} md={3} >
         <Card>
           <CardContent>
-            <Box display='flex' justifyContent='space-between'>
-              <Typography variant="subtitle1" color="initial">{categoria.nombreCategoria}</Typography>
-              {/* <Typography variant="subtitle2" color="initial">{categoria.cantProductos} productos</Typography> */}
+            <Typography variant="h6" align='center' color='white'>{categoria.nombreCategoria}</Typography>
 
-              <IconButton aria-label="editar-categoria" onClick={() => editarCategoria(categoria)}>
+            <Box display='flex' justifyContent='center'>
+              <Button variant="text" size='small' onClick={() => establecerCategoria()} >
+                Ver productos
 
-                <EditIcon />
-              </IconButton>
+              </Button>
+
             </Box>
 
 
-
             <Box display='flex' justifyContent='space-between'>
 
-              <Button variant='outlined' size='small'
+              <Button variant='text' size='small'
                 color='error'
                 onClick={() => eliminarCategoria(categoria)}
               >
 
-                <DeleteIcon />
+                <DeleteOutlined />
+                Eliminar
               </Button>
-              <Button variant="outlined" size='small' onClick={() => navigate(`/menu/editar/${nombreSeccion}/${categoria.nombreCategoria}`)} >
-                productos
+              <Button variant='text' size='small'
+                onClick={() => editarCategoria(categoria)}
+              >
 
+                <EditOutlined />
+                Editar
               </Button>
             </Box>
 

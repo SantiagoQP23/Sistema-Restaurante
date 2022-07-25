@@ -5,6 +5,7 @@ import { store } from './store/store';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
+import { SocketProvider } from './context/SocketContext';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -12,7 +13,10 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <SocketProvider>
+        <App />
+
+      </SocketProvider>
     </Provider>
   </React.StrictMode>
 );

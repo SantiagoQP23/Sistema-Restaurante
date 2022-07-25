@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   DialogActions, DialogContent, DialogContentText,
@@ -16,6 +16,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { ICategoria, IProducto } from '../../interfaces';
 import { useAppDispatch } from '../../hooks/useRedux';
+import { selectCategorias } from '../../reducers';
 
 
 
@@ -49,12 +50,14 @@ interface Props {
 }
 
 
-export const ModalEditarProducto: FC<Props> = ({ producto, closeModal, categorias, idCategoria }) => {
+export const ModalEditarProducto: FC<Props> = ({ producto, closeModal, categorias }) => {
 
   const dispatch = useAppDispatch();
 
+  const {categoriaActiva} = useSelector(selectCategorias);
 
-  const productoInitial = producto ? producto : initialForm(idCategoria);
+
+  const productoInitial = producto ? producto : initialForm(categoriaActiva!.idCategoria!);
 
   const { register, handleSubmit, formState: { errors }, control } = useForm<FormData>({
     defaultValues: productoInitial

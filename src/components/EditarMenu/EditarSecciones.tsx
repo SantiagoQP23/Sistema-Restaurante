@@ -38,7 +38,7 @@ export const EditarSecciones = () => {
 
   return (
     <>
-      <Box mb={2} display='flex' justifyContent='space-between'>
+      <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
 
         <Button variant="outlined" disabled startIcon={<ArrowBackIcon />} >
         </Button>

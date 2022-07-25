@@ -6,6 +6,7 @@ import { useAppDispatch } from '../app/hooks';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAppSelector } from '../hooks/useRedux';
+import { useEffect } from 'react';
 
 
 
@@ -41,7 +42,7 @@ export const Login = () => {
     defaultValues: initialForm
   });
 
-  const { error } = useAppSelector(selectAuth);
+  const { error, logged } = useAppSelector(selectAuth);
 
   const handleLogin = (form: FormData) => {
 
@@ -51,6 +52,7 @@ export const Login = () => {
 
 
   }
+ 
 
   return (
     <>
@@ -126,7 +128,7 @@ export const Login = () => {
                 />
                 <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
+                  label={"Remember me " + logged}
                 />
                 <Button
                   type="submit"

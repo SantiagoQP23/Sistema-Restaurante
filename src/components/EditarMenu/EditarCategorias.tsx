@@ -17,7 +17,7 @@ import { Categoria, Modal, ModalEditarCategoria, ModalEliminarCategoria } from '
 
 import { useModal } from '../../hooks/useModal';
 import { ICategoria } from '../../interfaces';
-import {  selectCategorias, selectSecciones } from '../../reducers';
+import { selectCategorias, selectSecciones } from '../../reducers';
 
 
 export function EditarCategorias() {
@@ -39,39 +39,19 @@ export function EditarCategorias() {
   // La categoria que se va a editar en el modal
   const [categoria, setCategoria] = useState<ICategoria | null>(null);
 
-  const [actualizar, setActualizar] = useState(false)
-
   const { isOpen: isOpenEditar, handleClickOpen: openModalEditar, handleClose: closeModalEditar } = useModal(false);
   const { isOpen: isOpenEliminar, handleClickOpen: openModalEliminar, handleClose: closeModalEliminar } = useModal(false);
 
 
   let rutaAtras = "/menu/editar";
 
-  const getSeccion = (nombreSeccion: string) => {
-
-    const seccion = secciones.find(seccion => seccion.nombreSeccion === nombreSeccion);
-    return seccion;
-
-  }
-
   const establecerCategorias = () => {
 
-    let seccion = getSeccion(nombreSeccion!);
+    setCategoriasSeccion(getCategoriasByIdSeccion(secciones, seccionActiva!.idSeccion!, categorias));
 
-    if (seccion) {
+    setIdSeccion(seccionActiva!.idSeccion!);
 
-      setCategoriasSeccion(getCategoriasByIdSeccion(secciones, seccion.idSeccion!, categorias));
-
-      setIdSeccion(seccion.idSeccion!);
-
-    } else {
-      // TODO Redireccionar 
-    }
   }
-
-
-
-
 
   // Abrir el modal de editar
   const editarCategoria = (categoria: ICategoria | null) => {
@@ -86,13 +66,10 @@ export function EditarCategorias() {
     openModalEliminar();
   }
 
-
+  // Si se añade una categoria hacer el filtrado de categorias de la seccion
   useEffect(() => {
-
-    console.log("Cambios en la seccion")
     establecerCategorias();
 
-    setActualizar(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categorias])
 
@@ -115,7 +92,7 @@ export function EditarCategorias() {
           </Button>
         </Link>
 
-        <Typography align="center" variant="h6" color="initial">{nombreSeccion}</Typography>
+        <Typography align="center" variant="h6" color="initial">{seccionActiva?.nombreSeccion}</Typography>
 
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => editarCategoria(null)}>
           Añadir
@@ -154,11 +131,8 @@ export function EditarCategorias() {
 
       <Modal open={isOpenEditar} closeModal={closeModalEditar}>
         <ModalEditarCategoria
-
           categoria={categoria}
           closeModal={closeModalEditar}
-          secciones={secciones}
-          idSeccion={idSeccion}
         />
       </Modal>
 

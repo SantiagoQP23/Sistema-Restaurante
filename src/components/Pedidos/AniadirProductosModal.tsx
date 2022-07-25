@@ -10,7 +10,7 @@ import {DetallePedido} from './';
 import { SocketContext } from '../../context/SocketContext';
 import { INuevoDetallePedido } from '../../interfaces';
 import { INuevoDetalle } from '../../interfaces/sockets';
-import { detalleAddNew, pedidoUpdateTotal, selectPedidos } from '../../reducers';
+import { detalleAddNew, pedidoDetalleAddNew, pedidoUpdateDetalles, pedidoUpdateTotal, selectDetalles, selectPedidos } from '../../reducers';
 
 
 
@@ -27,7 +27,7 @@ export const AniadirProductosModal: FC<Props> = ({ handleClose, open, detalle })
   const [descripcion, setDescripcion] = useState('');
   const { producto, cantidad, subtotal } = detalle;
 
-  const total = useSelector(selectPedidos).pedidoActivo?.total;  
+  const total = useSelector(selectPedidos).pedidoActivo?.total;
 
   const dispatch = useDispatch();
 
@@ -37,16 +37,16 @@ export const AniadirProductosModal: FC<Props> = ({ handleClose, open, detalle })
 
     const detalle = { idProducto: producto.idProducto, cantidad, descripcion, idPedido };
 
-    socket.emit('nuevoDetalle', {detalle}, ({nuevoDetalle, ok}: INuevoDetalle) => {
+    socket?.emit('nuevoDetalle', {detalle}, ({nuevoDetalle, ok}: INuevoDetalle) => {
        
       if(ok){
 
+        console.log("Añadiendo un nuevo detalle al pedido");
         // TODO recibir el detalle de pedido en el callback
         const { pedido, ...detalle } = nuevoDetalle;
         
         // TODO aniadir el detalle de pedido recibido
-        dispatch(detalleAddNew(detalle));
-
+        dispatch(pedidoDetalleAddNew(detalle));
         
         dispatch(pedidoUpdateTotal(Number(total) + Number(detalle.subtotal)));
 

@@ -19,7 +19,8 @@ import {
   PedidosLayout, 
   Error404, 
   Perfil, 
-  Usuarios
+  Usuarios,
+  Reportes
  } from '../pages/';
 
 // Componentes
@@ -46,8 +47,7 @@ export const AppRouter = () => {
 
   return (
     <>
-      <SocketProvider>
-
+     
         <Layout >
 
           <Routes>
@@ -74,13 +74,15 @@ export const AppRouter = () => {
             <Route path="*" element={<Error404 />} />
 
           <Route path="/usuarios" element={<Usuarios />} />
+          <Route path="/reportes" element={<Reportes />} />
+
 
           </Routes>
 
 
 
         </Layout>
-      </SocketProvider>
+      
 
     </>
   )

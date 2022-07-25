@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Grid, Button, Typography, useTheme } from '@mui/material';
@@ -19,21 +19,30 @@ import { PageTitleWrapper } from '../ui/PageTitleWraper';
 import { PageTitle } from '../ui/PageTitle';
 import { ContadorPedidos } from './';
 import { formatDistance } from 'date-fns';
+import { SocketContext } from '../../context/SocketContext';
+import { toast } from 'react-toastify';
+
+
+interface resp{
+  ok: boolean
+}
 
 
 export const Pedidos = () => {
 
-  const dispatch = useAppDispatch();
-
-  const [meseros, setMeseros] = useState<IUsuario[]>([]);
-  const theme = useTheme();
+  const { socket } = useContext(SocketContext);
 
   const { pedidos, fecha } = useSelector(selectPedidos);
-  const { usuario } = useSelector(selectAuth);
 
   const aniadirPedido = () => {
 
-    dispatch(pedidoStartAdded());
+    //socket?.emit('nuevoDetalle', {detalle}, ({nuevoDetalle, ok}: INuevoDetalle) => {
+    socket?.emit('nuevoPedido', {} , ({ok}: {ok: boolean}) => {
+      if(!ok){
+        toast.error("No se puedo añadir el pedido");
+      }
+    });
+    //dispatch(pedidoStartAdded());
   }
 
   // Mostrar los pedidos de la fecha seleccionada

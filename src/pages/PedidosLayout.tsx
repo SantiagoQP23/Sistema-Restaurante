@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { Outlet, useLocation } from "react-router-dom";
 
 import queryString from 'query-string';
@@ -10,6 +10,10 @@ import { useFecha } from '../hooks/useFecha';
 import { useAppDispatch } from '../hooks/useRedux';
 
 import { Footer } from '../components/ui/';
+import { SocketContext } from '../context/SocketContext';
+import { IPedido } from '../interfaces';
+import { pedidoAddNew, pedidoDeleted } from '../reducers';
+import { toast } from 'react-toastify';
 
 export const PedidosLayout = () => {
 
@@ -39,7 +43,53 @@ export const PedidosLayout = () => {
     cargarPedidos(fechaPedidos);
 
     // eslint-disable-next-line 
+
   }, [fechaPedidos]);
+
+
+  const { socket } = useContext(SocketContext);
+
+  useEffect(() => {
+
+    socket?.on('nuevoPedido', ({ pedido }: { pedido: IPedido }) => {
+
+
+      dispatch(pedidoAddNew(pedido))
+      toast.success("Se ha añadido un nuevo pedido");
+
+    });
+
+    return () => {
+      socket?.off('nuevoPedido');
+    }
+    
+  }, [socket]);
+
+  useEffect(() => {
+
+    socket?.on('eliminarPedido', ({ idPedido }: { idPedido: number }) => {
+
+      dispatch(pedidoDeleted(idPedido));
+      toast.success("Se ha eliminado un  pedido");
+
+    });
+
+    return () => {
+      socket?.off('eliminarPedido');
+    }
+    
+  }, [socket]);
+
+  
+
+
+
+
+
+  
+
+
+
 
   return (
     <>

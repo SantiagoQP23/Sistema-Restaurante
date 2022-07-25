@@ -13,20 +13,18 @@ const menuInitial = {
 }
 
 
-export const useProductos = (initialState = menuInitial) => {
+export const useProductos = (idSeccion: number = 2, idCategoria: number = 11) => {
 
   // Cargar menu
-  const [menu, setMenu] = useState(menuInitial);
+  const [menu, setMenu] = useState({ seccion: idSeccion, categoria: idCategoria });
   const { categoria, seccion } = menu;
 
   const [categoriasSeccion, setCategoriasSeccion] = useState<ICategoria[]>([]);
   const [productosCategoria, setProductosCategoria] = useState<IProducto[]>([]);
 
-  const { secciones} = useAppSelector((selectSecciones));
-  const { categorias} = useAppSelector((selectCategorias));
-  const { productos} = useAppSelector((selectProductos));
-
-
+  const { secciones } = useAppSelector((selectSecciones));
+  const { categorias } = useAppSelector((selectCategorias));
+  const { productos } = useAppSelector((selectProductos));
 
   const cambiarSeccion = (seccion: number) => {
     setMenu({
@@ -43,7 +41,7 @@ export const useProductos = (initialState = menuInitial) => {
   }
 
 
-  
+
   const cargarCategoriasBySeccion = (seccion: number) => {
 
     if (secciones.length > 0) {
@@ -74,29 +72,29 @@ export const useProductos = (initialState = menuInitial) => {
 
 
   }
-
+  
   useEffect(() => {
     cargarCategoriasBySeccion(seccion);
-
-  }, [])
-
-  useEffect(() => {
-    cargarCategoriasBySeccion(seccion);
-
+    
   }, [seccion])
 
-
+  
   useEffect(() => {
     cargarProductosByIdCategoria(categoria)
 
   }, [categoria, productos])
 
-
+/* 
   useEffect(() => {
     cargarCategoriasBySeccion(seccion);
-
-  }, [secciones, categorias])
-
+    
+  }, [secciones, categorias]) */
+  
+  
+    useEffect(() => {
+      cargarCategoriasBySeccion(seccion);
+  
+    }, [])
 
 
 
@@ -106,7 +104,7 @@ export const useProductos = (initialState = menuInitial) => {
     productosCategoria,
     cambiarSeccion,
     cambiarCategoria,
-    seccion, 
+    seccion,
     categoria
   }
 

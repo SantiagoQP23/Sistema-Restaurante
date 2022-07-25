@@ -11,6 +11,7 @@ export interface AuthState {
   checking: boolean,
   error: string | null;
   usuarios: IUsuario[];
+  logged: boolean
 }
 /*
 usuario:  idUsuario: 1,
@@ -27,7 +28,8 @@ const initialState: AuthState = {
   usuario: null,
   checking: true,
   error: null,
-  usuarios: []
+  usuarios: [],
+  logged: false
 };
 
 export const authSlice = createSlice({
@@ -37,10 +39,14 @@ export const authSlice = createSlice({
     authLogin: (state, action: PayloadAction<IUsuario>) => {
       state.usuario = action.payload;
       state.checking = false;
+      state.logged = true;
+      state.usuario.online = true;
     },
     authLogout: (state) => {
+      state.usuario!.online = false;
       state.usuario = null;
       state.checking = false;
+      state.logged = false; 
     },
     authCheckingFinish: (state) => {
       state.checking = false

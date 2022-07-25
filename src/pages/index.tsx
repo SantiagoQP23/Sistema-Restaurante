@@ -1,5 +1,6 @@
 
 export  * from './Login';
+export  * from './Reportes';
 
 export  * from './AniadirProductos';
 export  * from './EditarMenu';

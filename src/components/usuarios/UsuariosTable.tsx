@@ -144,7 +144,7 @@ export const UsuariosTable = () => {
                 </TableCell>
 
                 <TableCell align="center">
-                  {getStatusLabel(1)}
+                  {getStatusLabel(usuario.online! ? 1 : 0)}
                 </TableCell>
 
                 <TableCell align="center">

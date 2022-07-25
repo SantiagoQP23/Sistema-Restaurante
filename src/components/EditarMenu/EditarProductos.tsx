@@ -19,6 +19,7 @@ import { Modal, ModalEliminarProducto, ModalEditarProducto, Producto } from './'
 import { CategoriasState, ProductosState, SeccionesState, selectCategorias } from '../../reducers';
 import { ICategoria, IProducto, ISeccion } from '../../interfaces';
 import { useProductos } from '../../hooks';
+import { selectSecciones } from '../../reducers/seccionesSlice';
 
 interface Props {
 
@@ -31,7 +32,8 @@ export const EditarProductos: FC<Props> = () => {
   // TODO Valiaar si el nombre de la seccion y la categoria son validos
 
   let rutaAtras = `/menu/editar/${nombreSeccion}`;
-  const { categorias } = useSelector(selectCategorias);
+  const { categorias, categoriaActiva } = useSelector(selectCategorias);
+  const { seccionActiva } = useSelector(selectSecciones);
 
   // El producto que se va a mostrar en el modal
   const [producto, setProducto] = useState<IProducto | null>(null);
@@ -40,15 +42,12 @@ export const EditarProductos: FC<Props> = () => {
   const { isOpen: isOpenEliminar, handleClickOpen: openModalEliminar, handleClose: closeModalEliminar } = useModal(false);
 
   const {
-    secciones,
     categoriasSeccion,
     productosCategoria,
-    cambiarSeccion,
     cambiarCategoria,
-    seccion,
-    categoria } = useProductos();
+    categoria } = useProductos(seccionActiva?.idSeccion!, categoriaActiva?.idCategoria!);
 
-    // Abrir el modal de editar
+  // Abrir el modal de editar
   const editarProducto = (producto: IProducto | null) => {
     setProducto(producto);
     openModalEditar();
@@ -60,28 +59,8 @@ export const EditarProductos: FC<Props> = () => {
     openModalEliminar();
   }
 
-  const getSeccion = (nombreSeccion: string): ISeccion | undefined => {
-    const seccion = secciones.find(seccion => seccion.nombreSeccion === nombreSeccion);
-    return seccion;
-  }
-
-  const getCategoria = (nombreCategoria: string): ICategoria | undefined => {
-    const categoria = categorias.find(categoria => categoria.nombreCategoria === nombreCategoria);
-    return categoria;
-  }
-
-
   const cargarProductos = () => {
-
-    let seccion = getSeccion(nombreSeccion!);
-
-    if (seccion) {
-
-      let categoria = getCategoria(nombreCategoria!);
-      cambiarCategoria(categoria?.idCategoria!);
-
-    }
-
+    cambiarCategoria(categoriaActiva?.idCategoria!);
   }
 
 

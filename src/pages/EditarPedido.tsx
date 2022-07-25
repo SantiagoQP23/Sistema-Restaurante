@@ -1,18 +1,20 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 
 // Material UI
 import {
-  Grid, Typography, Button, TextField, Box, FormControl, Card, CardContent, Paper, IconButton,
+  Grid, Typography, Button, Box, Card, CardContent, Paper, IconButton,
   InputBase,
-  Container
+  Container,
+  List,
+  Divider,
+  ListItem,
+  ListItemText
 } from '@mui/material';
 
-import DoneIcon from '@mui/icons-material/Done';
 import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -20,11 +22,10 @@ import { SocketContext } from '../context/SocketContext';
 
 // Componentes
 import { DetallePedido } from '../components/Pedidos/DetallePedido';
-import { DetallesState, PedidosState, pedidoUpdatedNombreCliente, selectDetalles, selectPedidos } from '../reducers';
-import { detallesPedidoStartLoad } from '../actions/detallesPedido';
+import { detalleLoaded, pedidoUpdatedNombreCliente, selectDetalles, selectPedidos } from '../reducers';
 import { useAppDispatch } from '../hooks/useRedux';
-import { PageTitleWrapper } from '../components/ui';
-import { PageTitle } from '../components/ui/PageTitle';
+import { DoneOutline, DeleteOutline } from '@mui/icons-material';
+import { IDetallePedido } from '../interfaces/pedidos';
 
 
 export const EditarPedido = () => {
@@ -37,7 +38,7 @@ export const EditarPedido = () => {
   const { idPedido } = useParams();
 
 
-  const { detalles } = useSelector(selectDetalles);
+  //const { detalles } = useSelector(selectDetalles);
   const { pedidoActivo } = useSelector((selectPedidos));
 
 
@@ -47,16 +48,18 @@ export const EditarPedido = () => {
 
   const [cliente, setCliente] = useState<string>(pedidoActivo!.nombreCliente);
 
+  const detalles: IDetallePedido[] = pedidoActivo?.detalles!;
+
 
   async function cargarDetallesPedido(idPedido: number) {
 
-    dispatch(detallesPedidoStartLoad(idPedido));
-
+    //dispatch(detallesPedidoStartLoad(idPedido));
+    dispatch(detalleLoaded(pedidoActivo?.detalles!))
   }
 
   useEffect(() => {
 
-    cargarDetallesPedido(pedidoActivo?.idPedido!);
+    //cargarDetallesPedido(pedidoActivo?.idPedido!);
 
     // eslint-disable-next-line
   }, [])
@@ -65,7 +68,7 @@ export const EditarPedido = () => {
 
   const cambiarNombre = () => {
 
-    socket.emit('cambiarNombreCliente', { idPedido, cliente }, (ok: boolean) => {
+    socket?.emit('cambiarNombreCliente', { idPedido, cliente }, (ok: boolean) => {
       if (ok) {
         dispatch(pedidoUpdatedNombreCliente(cliente));
       }
@@ -79,28 +82,39 @@ export const EditarPedido = () => {
 
   return (
     <>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }} my={3}>
 
-      <PageTitleWrapper>
-        <PageTitle heading='Editar pedido' />
+        <Typography variant='h2'>Editar pedido</Typography>
         <Button variant="contained" color="primary" onClick={() => navigate(-1)}>
           <ArrowBackIcon />
         </Button>
-      </PageTitleWrapper>
+
+      </Box>
+
+
 
       <Container maxWidth="lg">
 
-        <Box display='flex' justifyContent='space-between' >
-          <Box>
-            <Button variant="outlined" color='error' aria-label="Eliminar pedido" >
-              <DeleteIcon />
-            </Button>
 
-            <Button variant="contained" aria-label="estado pedido" >
-              <DoneIcon />
-            </Button>
+
+        <Box display='flex' justifyContent='right' pb={2}>
+
+          <Box>
+            <IconButton
+              color='error'
+            >
+              <DeleteOutline />
+            </IconButton>
+            <IconButton
+
+              color='success'
+            >
+              <DoneOutline />
+            </IconButton>
+
 
             <Button
-              variant="contained"
+              variant="outlined"
               color="primary"
               onClick={() => navigate('productos')}
 
@@ -112,54 +126,102 @@ export const EditarPedido = () => {
 
           </Box>
 
-          <Paper
-            component='form'
-            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
-          >
-            <InputBase
-              id="input-nombre"
-              defaultValue={cliente}
-              onBlur={(e) => {
-                setCliente(e.target.value)
-              }}
-              fullWidth
-            />
-            <IconButton
-              color="primary"
-              onClick={cambiarNombre}
-              sx={{ p: '10px' }} aria-label="search">
-              <SaveIcon />
-            </IconButton>
-          </Paper>
         </Box>
 
 
-        <Box display='flex' justifyContent='space-between'>
-          <Paper sx={{ p: '4px' }}>
-            Total: {pedidoActivo?.total}
 
-          </Paper>
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6} >
+            <Typography variant='h6'>Nombre del cliente</Typography>
+            <Paper
+              component='form'
+              sx={{ px: 2, display: 'flex', alignItems: 'center', width: '100%' }}
+            >
+              {/* <InputLabel id='input-nombre'>Cliente</InputLabel> */}
+              <InputBase
+                id="input-nombre"
+                defaultValue={cliente}
+                onBlur={(e) => {
+                  setCliente(e.target.value)
+                }}
+                fullWidth
 
-        </Box>
+              />
+              <IconButton
+                color="primary"
+                onClick={cambiarNombre}
+                sx={{ p: '10px' }} aria-label="search">
+                <SaveIcon />
+              </IconButton>
+            </Paper>
+            <Typography variant='h6'>Información del pedido</Typography>
 
-        <Box>
-          <Typography variant="h6" color="initial" align='center'>Detalles del pedido</Typography>
-          <Grid container spacing={1}>
-            {
-              detalles.length > 0 && detalles.map(detalle => (
+            <Card>
+              <CardContent>
+                <List sx={{ px: 1 }}>
 
-                <DetallePedido key={detalle.idDetallePedido}
-                  detalle={detalle}
-                  totalPedido={pedidoActivo!.total}
-                />
-
-              ))
-
-            }
-
+                  <ListItem sx={{ py: 1.5 }}>
+                    <ListItemText
+                      primary="Mesero"
+                      primaryTypographyProps={{ variant: 'subtitle2' }}
+                    />
+                    <Typography variant="subtitle2" color="text.primary">
+                      {pedidoActivo?.usuario.nombres}
+                    </Typography>
+                  </ListItem>
+                  <Divider component="li" />
+                  <ListItem sx={{ py: 1.5 }}>
+                    <ListItemText
+                      primary="Fecha"
+                      primaryTypographyProps={{ variant: 'subtitle2' }}
+                    />
+                    <Typography variant="subtitle2" color="text.primary">
+                      {`${pedidoActivo?.fecha}`}
+                    </Typography>
+                  </ListItem>
+                  <Divider component="li" />
+                  <ListItem sx={{ py: 1.5 }}>
+                    <ListItemText
+                      primary="Total"
+                      primaryTypographyProps={{ variant: 'subtitle2' }}
+                    />
+                    <Typography
+                      variant="subtitle2"
+                      color="text.primary"
+                      fontWeight="bold"
+                    >
+                      {pedidoActivo?.total}
+                    </Typography>
+                  </ListItem>
+                </List>
+              </CardContent>
+            </Card>
           </Grid>
 
-        </Box>
+          <Grid item xs={12} md={6} >
+
+            <Box>
+              <Typography variant="h6" align='center'>Detalles del pedido</Typography>
+              <Grid container spacing={1}>
+                {
+                  detalles.length > 0 && detalles.map(detalle => (
+
+                    <DetallePedido key={detalle.idDetallePedido}
+                      detalle={detalle}
+                      totalPedido={pedidoActivo!.total}
+                    />
+
+                  ))
+
+                }
+
+              </Grid>
+
+            </Box>
+          </Grid>
+
+        </Grid>
+
 
       </Container>
 

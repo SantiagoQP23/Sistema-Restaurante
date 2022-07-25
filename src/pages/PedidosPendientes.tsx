@@ -1,135 +1,58 @@
 import { useEffect, useState, useContext } from 'react';
-import { Typography, Grid, Select, MenuItem, InputLabel, Box, FormControl, Divider, Card, CardContent, Badge, Tooltip, styled, Avatar, LinearProgress, useTheme, CardHeader, TextField } from '@mui/material';
+import { Grid } from '@mui/material';
+import { useLocation, } from 'react-router-dom';
+import queryString from 'query-string';
+
+
+import { useFecha } from '../hooks/useFecha';
 import { fetchConToken } from '../helpers/fetch';
+
+import { IDetallePedido } from '../interfaces/pedidos';
 import { SocketContext } from '../context/SocketContext';
-import { IDetallePedido, IDetallePendiente } from '../interfaces/pedidos';
 import { IActualizarCantidadDetalle, IEliminarDetalle, INuevoDetallePendiente } from '../interfaces/sockets';
 
+import { pedidoStartLoaded } from '../actions';
 
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { selectPedidos } from '../reducers/pedidosSlice';
 
 import { PageTitle } from '../components/ui/PageTitle';
 import { PageTitleWrapper } from '../components/ui/PageTitleWraper';
-import { DetallePendiente } from '../components/pedidosPendientes/DetallePendiente';
-import { PedidoPendiente } from '../components/pedidosPendientes/';
-import { useAppSelector, useAppDispatch } from '../app/hooks';
-import {  selectPedidos } from '../reducers/pedidosSlice';
-import { LocalizationProvider, MobileDatePicker } from '@mui/lab';
-import { useFecha } from '../hooks/useFecha';
-import { parsearFecha } from '../helpers/fecha';
-import { useLocation, useNavigate } from 'react-router-dom';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { FiltrosPedidos } from '../components/Pedidos';
-import queryString from 'query-string';
-import { pedidoStartLoaded } from '../actions';
+import { PedidoPendiente } from '../components/pedidosPendientes/';
 
 
 export const PedidosPendientes = () => {
 
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const { pedidos } = useAppSelector(selectPedidos);
 
+  // Obtener la fecha del url
+  let { fecha = '' } = queryString.parse(location.search);
 
-  const [detalles, setDetalles] = useState<IDetallePedido[]>([]);
+  const { setFecha, fecha: fechaPedidos } = useFecha();
 
-  const{pedidos} = useAppSelector(selectPedidos);
-
-  const { socket } = useContext(SocketContext);
-
-  const obtenerDetalles = async () => {
-    const resp = await fetchConToken('pedidos/detalles/pendientes');
-    const body = await resp.json();
-
-    if (resp.ok) {
-      setDetalles(body.detalles);
-    }
+  const cargarPedidos = (fecha: string) => {
+    dispatch(pedidoStartLoaded(fecha));
   }
 
-   // Obtener la fecha del url
-   let { fecha = '' } = queryString.parse(location.search);
-
-   const { setFecha, fecha: fechaPedidos } = useFecha();
- 
-   const cargarPedidos = (fecha: string) => {
-     dispatch(pedidoStartLoaded(fecha));
-   }
- 
-   // Establecer la fecha de los pedidos a mostrar
-   useEffect(() => {
-     fecha
-       ? setFecha(fecha[0]!)
-       : setFecha();
- 
-   }, []);
- 
-   // Cargar los pedidos cuando cambia la fecha
-   useEffect(() => {
- 
-     cargarPedidos(fechaPedidos);
- 
-     // eslint-disable-next-line 
-   }, [fechaPedidos]);
-
-  // MOSTRAR UN NUEVO DETALLE
-
+  // Establecer la fecha de los pedidos a mostrar
   useEffect(() => {
+    fecha
+      ? setFecha(fecha[0]!)
+      : setFecha();
 
-    socket.on('nuevoDetalle', ({ nuevoDetalle }: INuevoDetallePendiente) => {
-
-      setDetalles(detalles => [...detalles, nuevoDetalle]);
-
-    });
-
-    return () => {
-      socket.off('nuevoDetalle');
-    }
-
-  }, [socket]);
-
-
-  // ELIMINAR UN DETALLE
-  useEffect(() => {
-
-    socket.on('eliminarDetalle', ({ idDetallePedido }: IEliminarDetalle) => {
-
-      setDetalles(detalles => detalles.filter(detalle => detalle.idDetallePedido !== idDetallePedido));
-
-    });
-
-    return () => {
-      socket.off('eliminarDetalle');
-    }
-
-  }, [socket]);
-
-  // ACTUALIZAR LA CANTIDAD DE UN DETALLE
-  useEffect(() => {
-
-    socket.on('actualizarCantidadDetalle', ({ detalle }: IActualizarCantidadDetalle) => {
-
-      const { idDetallePedido } = detalle;
-
-      setDetalles(detalles => detalles.map(det => {
-        if (det.idDetallePedido === idDetallePedido) {
-          return detalle
-        }
-        return det
-      }));
-
-      return () => {
-        socket.off('actualizarCantidadDetalle');
-      }
-
-    });
-
-  }, [socket]);
-
-
-
-
-  useEffect(() => {
-
-    obtenerDetalles();
   }, []);
+
+  // Cargar los pedidos cuando cambia la fecha
+  useEffect(() => {
+
+    cargarPedidos(fechaPedidos);
+
+    // eslint-disable-next-line 
+  }, [fechaPedidos]);
+
 
 
   return (
@@ -145,11 +68,11 @@ export const PedidosPendientes = () => {
       </Grid>
 
       <Grid container spacing={1}>
-       {pedidos.length > 0 && pedidos.map( p => (
-         <PedidoPendiente pedido={p} key={p.idPedido} />
+        {pedidos.length > 0 && pedidos.map(p => (
+          <PedidoPendiente pedido={p} key={p.idPedido} />
 
-         ) 
-       )}
+        )
+        )}
 
       </Grid>
 

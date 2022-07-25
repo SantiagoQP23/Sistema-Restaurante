@@ -1,34 +1,62 @@
 
 import { io, Socket } from "socket.io-client";
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useCallback } from "react";
 import { ClientToServerEvents, ServerToClientEvents } from "../interfaces/sockets";
 
 
 export const useSocket = (serverPath: string) => {
   
-  const socket : Socket<ServerToClientEvents, ClientToServerEvents>  = useMemo(() => io(serverPath, {
+ /*  const socket : Socket<ServerToClientEvents, ClientToServerEvents>  = useMemo(() => io(serverPath, {
     transports: ['websocket'],
     autoConnect: true
-  }), [serverPath]);
+  }), [serverPath]); */
   
-  const [online, setOnline] = useState(false);
+  const [online, setOnline] = useState<boolean | undefined>(false);
+
+  const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null);
+
+
+
+  const conectarSocket = useCallback( () => {
+
+    const token = localStorage.getItem('x-token');
+
+     const socketTemp = io(serverPath, {
+      transports: ['websocket'],
+      autoConnect: true,
+      forceNew: true,
+      query: {
+        'x-token': token 
+      }
+    
+    });
+
+    setSocket(socketTemp);
+
+  }, [serverPath]);
+
+  const desconectarSocket = useCallback( () => {
+
+    socket?.disconnect();
+  }, [socket]);
+
 
 
   useEffect(() => {
 
-    setOnline(socket.connected);
+    setOnline(socket?.connected);
   }, [socket]);
 
 
   useEffect(() => {
-    socket.on('connect', () => {
+    socket?.on('connect', () => {
       setOnline(true);
     });
 
   }, [socket]);
 
   useEffect(() => {
-    socket.on('disconnect', () => {
+    socket?.on('disconnect', () => {
       setOnline(false);
     });
 
@@ -37,7 +65,9 @@ export const useSocket = (serverPath: string) => {
 
   return {
     socket,
-    online
+    online,
+    conectarSocket,
+    desconectarSocket
   }
 
 }

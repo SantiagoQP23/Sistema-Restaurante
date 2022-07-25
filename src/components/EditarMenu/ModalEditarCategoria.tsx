@@ -1,16 +1,17 @@
 import { FC } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { DialogActions, TextField, DialogContent, DialogContentText, DialogTitle, Button, Select, MenuItem, Typography } from '@mui/material/';
+import { DialogActions, TextField, DialogContent, DialogContentText, DialogTitle, Button, Select, MenuItem, Typography, InputLabel } from '@mui/material/';
 // MOdal
 
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { categoriaStartCreated, categoriaStartUpdate } from '../../actions/categorias';
 
 import { ICategoria, ISeccion } from '../../interfaces';
 import { useAppDispatch } from '../../hooks/useRedux';
+import { selectSecciones } from '../../reducers';
 
 const initialForm = (idSeccion: number) => {
   return {
@@ -29,18 +30,17 @@ interface FormData {
 interface Props {
   categoria: ICategoria | null;
   closeModal: () => void;
-  secciones: ISeccion[];
-  idSeccion: number;
 }
 
-export const ModalEditarCategoria: FC<Props> = ({ categoria, closeModal, secciones, idSeccion }) => {
+export const ModalEditarCategoria: FC<Props> = ({ categoria, closeModal }) => {
 
   const dispatch = useAppDispatch();
-  const categoriaInitial = categoria ? categoria : initialForm(idSeccion);
 
-  const navigate = useNavigate();
+  const { seccionActiva, secciones } = useSelector(selectSecciones);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const categoriaInitial = categoria ? categoria : initialForm(seccionActiva!.idSeccion!);
+
+  const { register, handleSubmit, formState: { errors }, control } = useForm<FormData>({
     defaultValues: categoriaInitial,
 
   });
@@ -55,7 +55,6 @@ export const ModalEditarCategoria: FC<Props> = ({ categoria, closeModal, seccion
       dispatch(categoriaStartUpdate(form as ICategoria));
     }
 
-    // TODO Mostrar retroalimentacion
     closeModal();
 
   }
@@ -63,7 +62,7 @@ export const ModalEditarCategoria: FC<Props> = ({ categoria, closeModal, seccion
 
   return (
     <>
-      <form onSubmit={ handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
 
         <DialogTitle> {categoria ? categoria.nombreCategoria : "Añadir Categoria"}</DialogTitle>
 
@@ -80,52 +79,73 @@ export const ModalEditarCategoria: FC<Props> = ({ categoria, closeModal, seccion
             fullWidth
             variant="standard"
             {
-              ...register('nombreCategoria', {
-                required: 'Este campo es requerido',
-                minLength: {value: 2, message: 'Minimo 2 caracteres'}
-              })
+            ...register('nombreCategoria', {
+              required: 'Este campo es requerido',
+              minLength: { value: 2, message: 'Minimo 2 caracteres' }
+            })
             }
             error={!!errors.nombreCategoria}
             helperText={<Typography variant="body1" color="red">{errors.nombreCategoria?.message}</Typography>}
-            
-            
-            />
+
+
+          />
 
           <TextField
             id="descripcion-seccion"
             label="Descripcion de la Categoria"
             margin="dense"
-            
+
             multiline
             rows={4}
             defaultValue=""
             fullWidth
-            
-            />
-          <Select
-            labelId="label-seccion-categoria"
-            
-            label="Seccion"
-            fullWidth
-            margin='dense'
-            disabled
-            {
-              ...register('idSeccion') 
+
+          />
+
+          <Controller
+            name='idSeccion'
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) =>
+              <>
+                <InputLabel id='select-seccion'>Seccion</InputLabel>
+                <Select
+                  labelId="select-seccion"
+
+                  label="Seccion"
+                  fullWidth
+                  margin='dense'
+                  disabled
+               
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  error={!!errors.idSeccion}
+
+                >
+
+                  {secciones.map(seccion => (
+
+                    <MenuItem key={seccion!.idSeccion} value={seccion.idSeccion!}>{seccion.nombreSeccion} </MenuItem>
+                  )
+
+
+                  )
+                  }
+
+                </Select>
+              </>
             }
-            error={!!errors.idSeccion}
-            
-            >
 
-            {secciones.map(seccion => (
-
-              <MenuItem key={seccion!.idSeccion} value={seccion.idSeccion!}>{seccion.nombreSeccion} </MenuItem>
-            )
+          />
 
 
-            )
-            }
 
-          </Select>
+
+
+
+
+
+
 
         </DialogContent>
 

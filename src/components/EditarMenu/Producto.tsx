@@ -1,11 +1,12 @@
 import React, { FC } from 'react'
 
-import { Typography, Grid, Box, Button, Card, CardContent } from '@mui/material/';
+import { Typography, Grid, Box, Button, Card, CardContent, IconButton, CardActions } from '@mui/material/';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { IProducto } from '../../interfaces';
+import { DeleteOutline, EditOutlined } from '@mui/icons-material';
 
 
 
@@ -19,34 +20,34 @@ export const Producto: FC<Props> = ({ producto, editarProducto, eliminarProducto
   return (
     <>
 
-      <Grid item xs={12} md={4} >
-        <Card>
+      <Grid item xs={12} sm={4} md={3} lg={3}>
+        <Card >
           <CardContent>
-            <Box >
-              <Typography variant="subtitle1" color="initial">{producto.nombre}</Typography>
-              <Typography variant="subtitle2" color="initial">Precio: ${producto.precio}</Typography>
 
-            </Box>
+            <Typography variant="h6" align='center' color='white' >{producto.nombre}</Typography>
+            <Typography variant="subtitle2" color='primary' align='center'>$ {producto.precio}</Typography>
 
-            <Box display='flex' justifyContent='space-between' mt={1}>
+            <Box display='flex' justifyContent='space-between'>
 
-              <Button variant='outlined'
-                size='small'
+              <Button
+                variant='text'
                 color='error'
                 onClick={() => eliminarProducto(producto)}
               >
-
-                <DeleteIcon />
+                <DeleteOutline />
+                Eliminar
               </Button>
 
-              <Button variant='outlined'
-                size='small'
-                color='info'
+              <Button
+                color='primary'
                 onClick={() => editarProducto(producto)}
+                variant='text'
               >
-
-                <EditIcon />
+                <EditOutlined />
+                Editar
               </Button>
+
+
             </Box>
 
 

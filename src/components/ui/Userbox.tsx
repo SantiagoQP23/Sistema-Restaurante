@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 
 import {
   Avatar,
@@ -29,6 +29,8 @@ import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { authLogout, selectAuth, startLogout } from '../../reducers';
 import { useDispatch } from 'react-redux';
+import { useSocket } from '../../hooks/useSocket';
+import { SocketContext } from '../../context/SocketContext';
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
@@ -69,6 +71,8 @@ export const Userbox = () => {
 
   const { usuario} = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
+
+  const { socket } = useContext(SocketContext);
   
 
   const user =
@@ -161,7 +165,7 @@ export const Userbox = () => {
         <Box sx={{ m: 1 }}>
           <Button color="primary" fullWidth onClick={() => handleLogout()}>
             <LockOpenTwoToneIcon sx={{ mr: 1 }} />
-            Sign out
+            Cerrar sesión
           </Button>
         </Box>
       </Popover>

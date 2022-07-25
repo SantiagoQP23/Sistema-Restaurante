@@ -1,3 +1,4 @@
+import { IPedido } from "./pedidos";
 
 
 export interface ICargo {
@@ -15,7 +16,8 @@ export interface IUsuario {
   
   cargo: ICargo,
   idCargo?: number;
-  estado?: boolean
+  estado?: boolean,
+  online?: boolean,
 }
 
 export interface ILogin{

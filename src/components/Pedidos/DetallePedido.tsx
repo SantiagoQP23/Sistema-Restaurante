@@ -15,7 +15,7 @@ import { useCounter } from '../../hooks/useCounter';
 import { SocketContext } from '../../context/SocketContext';
 import { IDetallePedido, INuevoDetallePedido } from '../../interfaces';
 import { ICallbackSocket } from '../../interfaces/sockets';
-import { detalleDeleted, detalleSetActive, detalleUpdatedCantidad, pedidoUpdateTotal } from '../../reducers';
+import { detalleDeleted, detalleSetActive, detalleUpdatedCantidad, pedidoDetalleActivo, pedidoDetalleCantidad, pedidoDetalleDeleted, pedidoUpdateTotal } from '../../reducers';
 import { AddCircleOutline, RemoveCircleOutline, SaveOutlined } from '@mui/icons-material';
 
 interface Props {
@@ -54,12 +54,12 @@ export const DetallePedido: FC<Props> = ({ detalle, totalPedido }) => {
           idPedido
         }
 
-        socket.emit('eliminarDetalle', detalleEliminar, ({ ok }: ICallbackSocket) => {
+        socket?.emit('eliminarDetalle', detalleEliminar, ({ ok }: ICallbackSocket) => {
 
           // TODO leer el ok en el callbacke
           if (ok) {
             // TODO Eliminar el detalle de pedido
-            dispatch(detalleDeleted(detalle.idDetallePedido));
+            dispatch(pedidoDetalleDeleted(detalle.idDetallePedido));
 
             dispatch(pedidoUpdateTotal(Number(totalPedido) - Number(detalle.subtotal)))
 
@@ -88,20 +88,18 @@ export const DetallePedido: FC<Props> = ({ detalle, totalPedido }) => {
 
     }
 
-    socket.emit('actualizarCantidadDetalle', { detalleActualizar }, (data: ICallbackSocket) => {
+    socket?.emit('actualizarCantidadDetalle', { detalleActualizar }, (data: ICallbackSocket) => {
 
-      // TODO leer el ok en el callback
+      
       if (data.ok) {
-        // TODO Activar el detalle de pedido
-        dispatch(detalleSetActive(detalle));
-
-        // TODO Actualizar la cantidad del detalle
-        dispatch(detalleUpdatedCantidad(counter));
+      
+        dispatch(pedidoDetalleActivo(detalle));
+        
+        dispatch(pedidoDetalleCantidad(counter));
 
         const subtotal = cantidad * detalle.producto.precio;
         const aumentar = counter > detalle.cantidad;
 
-        // TODO Actualizar el subtotal del pedido
         const total = aumentar
           ? Number(totalPedido) + Number(subtotal)
           : Number(totalPedido) - Number(subtotal);
@@ -116,7 +114,7 @@ export const DetallePedido: FC<Props> = ({ detalle, totalPedido }) => {
   return (
     <>
 
-      <Grid item xs={12} md={6} lg={4}>
+      <Grid item xs={12} >
 
         <Box className='caja-detalle' >
           <Card>

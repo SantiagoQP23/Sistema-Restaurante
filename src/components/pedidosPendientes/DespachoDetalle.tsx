@@ -1,9 +1,11 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material'
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import { useCounter } from '../../hooks/useCounter';
 import { IDetallePedido } from '../../interfaces';
 
 import { AddCircleOutline, RemoveCircleOutline, SaveOutlined } from '@mui/icons-material';
+import { SocketContext } from '../../context/SocketContext';
+import { toast } from 'react-toastify';
 
 
 interface Props {
@@ -13,6 +15,10 @@ interface Props {
 
 export const DespachoDetalle: FC<Props> = ({ handleClose, detalle }) => {
 
+  const { socket } = useContext(SocketContext);
+
+  const { idPedido, idDetallePedido } = detalle;
+
   const { state: counter, increment, decrement } = useCounter(
     detalle.cantEntregada, detalle.cantidad, detalle.cantEntregada);
 
@@ -20,6 +26,17 @@ export const DespachoDetalle: FC<Props> = ({ handleClose, detalle }) => {
 
 
     console.log('Despachando', counter, detalle.producto.nombre);
+    socket?.emit(
+      'despacharDetalle',
+      { idPedido, idDetallePedido, cantidad: counter } as { idPedido: number, idDetallePedido: number, cantidad: number },
+      ({ ok }: { ok: boolean }) => {
+
+        if (!ok) {
+          toast.error("No se pudo despachar el detalle");
+        }
+      })
+
+
 
     handleClose();
   }

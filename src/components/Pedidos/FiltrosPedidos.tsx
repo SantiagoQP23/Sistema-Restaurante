@@ -40,11 +40,11 @@ export const FiltrosPedidos: FC<Props> = () => {
   return (
     <>
       <Grid item xs={6} lg={3}>
-        <FormControl fullWidth>
+        <FormControl fullWidth color='primary'>
           <LocalizationProvider dateAdapter={AdapterDateFns} >
             <MobileDatePicker
-            label="fecha"
-            inputFormat="yyyy/MM/dd"
+            label="Fecha"
+            inputFormat="dd/MM/yyyy"
             value={new Date(`${fecha}T21:11:54`)}
             onChange={(value) => cambiarFecha(value as Date)}
             renderInput={(params) => <TextField {...params} />}
@@ -76,7 +76,7 @@ export const FiltrosPedidos: FC<Props> = () => {
       <Grid item xs={12} lg={3}>
 
         <FormControl fullWidth>
-          <InputLabel id="select-meseros">Mesero</InputLabel>
+          <InputLabel id="select-meseros" color='primary'>Mesero</InputLabel>
           <Select
             labelId="select-meseros"
             label="Meseros"

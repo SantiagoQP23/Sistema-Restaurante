@@ -15,6 +15,7 @@ import { useModal, useProductos } from '../hooks';
 import { PedidosState, selectPedidos } from '../reducers/pedidosSlice';
 import { DetallesState, selectDetalles } from '../reducers/detallesPedidoSlice';
 import { IDetallePedido, INuevoDetallePedido } from '../interfaces';
+import { ShoppingCartOutlined } from '@mui/icons-material';
 
 
 export const AniadirProductos: FC = () => {
@@ -47,11 +48,11 @@ export const AniadirProductos: FC = () => {
         <Typography variant='h2'>Añadir productos</Typography>
 
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           onClick={() => navigate(-1)}
         >
-          <ShoppingCartIcon /> $ {pedidoActivo!.total}
+          <ShoppingCartOutlined /> $ {pedidoActivo!.total}
         </Button>
 
       </Box>
@@ -60,8 +61,9 @@ export const AniadirProductos: FC = () => {
       <FormControl fullWidth>
         <Grid container spacing={1}>
           <Grid item xs={12} md={6} lg={3} >
-           
+            <InputLabel id='select-seccion'>Sección</InputLabel>
             <Select
+              id='select-seccion'
               value={seccion}
               label="Seccion"
               margin='dense'
@@ -83,8 +85,8 @@ export const AniadirProductos: FC = () => {
 
           </Grid>
           <Grid item xs={12} md={6} lg={3} >
-
             <Select
+              id='select-categoria'
               value={categoria}
               label="categoria"
               onChange={(e => {

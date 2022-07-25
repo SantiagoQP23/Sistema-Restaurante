@@ -13,7 +13,7 @@ export const productoStartCreated = (producto: IProducto): AppThunk => async (
   getState) => {
   try {
 
-   /*  const resp = await fetchConToken(`menu/productos/crear`, producto, 'POST');
+    const resp = await fetchConToken(`menu/productos/crear`, producto, 'POST');
 
     const body = await resp.json();
 
@@ -31,7 +31,7 @@ export const productoStartCreated = (producto: IProducto): AppThunk => async (
 
     } else {
       toast.error(body.errors[0].msg);
-    } */
+    }
 
   } catch (error) {
     console.log(error)
