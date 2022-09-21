@@ -26,6 +26,7 @@ export const DespachoDetalle: FC<Props> = ({ handleClose, detalle }) => {
 
 
     console.log('Despachando', counter, detalle.producto.nombre);
+    
     socket?.emit(
       'despacharDetalle',
       { idPedido, idDetallePedido, cantidad: counter } as { idPedido: number, idDetallePedido: number, cantidad: number },

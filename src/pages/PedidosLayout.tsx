@@ -98,7 +98,7 @@ export const PedidosLayout = () => {
         <Outlet />
 
       </Container>
-      <Footer />
+      {/* <Footer /> */}
 
     </>
   )
